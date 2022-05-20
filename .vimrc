@@ -1,6 +1,5 @@
 set nocompatible 
 set number
-
 set relativenumber
 set encoding=utf-8
 set autoindent 
@@ -13,6 +12,8 @@ syntax enable
 set splitright
 cabbrev vb vert sb
 
+"incremental and highlight search results
+set is hls
 
 " search in subfolders and tabcomplete
 set path +=**
@@ -35,6 +36,13 @@ map <C-J> :bnext<CR>
 map <C-K> :bprev<CR>
 
 
+" autocomplete for python
+let g:pydiction_location = '~/.vim/pydiction/complete-dict'
+"if has("autocmd")
+"    autocmd FileType python set complete+=k/home/nikolai/.vim/pydiction isk+=.,(
+"endif " has("autocmd")
+
+
 
 " plugins 
 call plug#begin('~/.vim/plugged')
@@ -44,6 +52,7 @@ let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
 set conceallevel=1
 let g:tex_conceal='abdmgs'
+let g:Tex_BibtexFlavor = 'biber'
 let g:vimtex_compiler_method = 'latexmk'
 let g:vimtex_compiler_latexmk = {
     \ 'options' : [
