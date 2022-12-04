@@ -32,7 +32,7 @@ function! SwapSplits()
 		execute ":b " current_buffer
 		:exe "normal \<C-w>\<C-w>"
 		execute ":b" other_buffer
-	catch /E37:/
+	catch /E37:/ " No write since last change
 		:exe "normal \<C-w>\<C-w>"
 		execute ":b " other_buffer
 		:exe "normal \<C-w>\<C-w>"
@@ -55,7 +55,20 @@ function! NewFileRight()
 		:vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
-		:e .
+		try
+			:e .
+		catch /E37:/ " No write since last change
+			echo "do you want to save the buffer? y/n "
+			let l:want_to_save = Confirm()
+			if l:want_to_save == 'y'
+				:w
+				:e .
+			elseif l:want_to_save == 'n'
+				:e! .
+			elseif l:want_to_save == 'e' 
+				redraw " for å få teksten til å forsvinne etter man avbryter
+			endif
+		endtry
 	endif
 endfunction
 
@@ -65,30 +78,31 @@ function! ToggleSplits()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		try
 			:on
-		catch /E445:/
-			call Confirm()
+		catch /E445:/ " Other window contains changes
+			echo "do you want to save the other buffer? y/n "
+			let l:want_to_save = Confirm()
+			if l:want_to_save == 'y'
+				:exe "normal \<C-w>\<C-w>" 
+				:wq
+			elseif l:want_to_save == 'n'
+				:exe "normal \<C-w>\<C-w>" 
+				:q!
+			elseif l:want_to_save == 'e'
+				redraw " for å få teksten til å forsvinne etter man avbryter
+			endif
 		endtry
 	endif
-
 endfunction
 
 function! Confirm()
-	echo "do you want to save the other buffer? y/n "
 	let l:answer = nr2char(getchar())
-	if l:answer == 'y'
-		:exe "normal \<C-w>\<C-w>" 
-		:wq
-	elseif l:answer == 'n'
-		:exe "normal \<C-w>\<C-w>" 
-		:q!
+	if l:answer == 'y' || l:answer == 'n'
+		return l:answer
 	elseif l:answer == '' " avbryte med <ESC>
-		echo "" 
-		redraw " for å få teksten til å forsvinne etter man avbryter
+		return 'e'
 	else
-		echo l:answer
 		return Confirm()
 	endif
-
 endfunction
 
 " prøver å gjøre det smudere å åpne filer
