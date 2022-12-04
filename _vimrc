@@ -10,6 +10,8 @@ if has('gui')                    " gVim specific stuff
 	set guioptions-=T        " remove toolbar
 	set guioptions-=r        " remove right toolbar
 	set guioptions-=L        " remove left toolbar
+	set guioptions-=m        " remove menubar
+	set guioptions+=k        " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
 	cd w:\
@@ -20,7 +22,26 @@ endif
 
 imap Îy <BS> 
 
-function NewFileLeft()
+function! SwapSplits()
+	" legge til så denne ikke kjører når det ikke er kun 2 splits
+	const current_buffer = bufnr("%")
+	:exe "normal \<C-w>\<C-w>"
+	const other_buffer = bufnr("%")
+
+	try
+		execute ":b " current_buffer
+		:exe "normal \<C-w>\<C-w>"
+		execute ":b" other_buffer
+	catch /E37:/
+		:exe "normal \<C-w>\<C-w>"
+		execute ":b " other_buffer
+		:exe "normal \<C-w>\<C-w>"
+		execute ":b" current_buffer
+		:exe "normal \<C-w>\<C-w>"
+	endtry
+endfunction
+
+function! NewFileLeft()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:topleft vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
@@ -29,7 +50,7 @@ function NewFileLeft()
 	endif
 endfunction
 
-function NewFileRight()
+function! NewFileRight()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
@@ -38,7 +59,7 @@ function NewFileRight()
 	endif
 endfunction
 
-function ToggleSplits()
+function! ToggleSplits()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		call NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
@@ -51,7 +72,7 @@ function ToggleSplits()
 
 endfunction
 
-function Confirm()
+function! Confirm()
 	echo "do you want to save the other buffer? y/n "
 	let l:answer = nr2char(getchar())
 	if l:answer == 'y'
@@ -74,6 +95,7 @@ endfunction
 nnoremap <A-Space> :call ToggleSplits()<CR>
 nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
+nnoremap <A-u> :call SwapSplits()<CR>
 
 filetype plugin indent on
 syntax on
@@ -109,10 +131,10 @@ nnoremap <C-K> :bprev<CR>
 
 
 " typos
-:command WQ wq
-:command Wq wq
-:command W w
-:command Q q
+:command! WQ wq
+:command! Wq wq
+:command! W w
+:command! Q q
 
 " lettere å copypaste vanlig register
 nnoremap <A-c> "+y
