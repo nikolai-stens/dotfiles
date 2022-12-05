@@ -5,6 +5,7 @@ set encoding=utf-8
 set autoindent 
 set termguicolors
 
+
 if has('gui')                    " gVim specific stuff
 	set guifont=Consolas:h14 " set font and font size
 	set guioptions-=T        " remove toolbar
@@ -42,6 +43,7 @@ function! SwapSplits()
 endfunction
 
 function! NewFileLeft()
+	" må legge til catch til E37
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:topleft vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
@@ -74,8 +76,11 @@ endfunction
 
 function! ToggleSplits()
 	if tabpagewinnr(tabpagenr(), '$') == 1
-		call NewFileRight()
-	elseif tabpagewinnr(tabpagenr(), '$') == 2
+		:vsplit
+		:b #
+		:exe "normal \<C-w>\<C-w>" 
+		" call NewFileRight()
+	else
 		try
 			:on
 		catch /E445:/ " Other window contains changes
@@ -114,6 +119,9 @@ nnoremap <A-u> :call SwapSplits()<CR>
 filetype plugin indent on
 syntax on
 
+set shiftwidth=4
+set tabstop=4
+
 " open buffers vertically 
 cabbrev vb vert sb
 
@@ -134,10 +142,18 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
+function! Build()
+	" legge til at outputten legges til i en log-fil som overskrides hver gang
+	" jeg kjører. må også se om jeg kan få den til å kjøre raskere, er veldig
+	" treg nå....
+	:vnew|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
+endfunction
+
 " different remapped keys
 nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <Tab> <C-w><C-w>
-nnoremap <C-t> :!python %<CR>
+" nnoremap <C-t> :!python %<CR>
+nnoremap <C-t> :call Build()<CR>
 "nnoremap % :source %<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap <C-J> :bnext<CR>
@@ -161,6 +177,16 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+nnoremap <A-p> vip
+
+
+set ignorecase
+nnoremap <Space> /
+nnoremap <C-Space> ?
+
+" for marks
+nnoremap , `
 
 " plugins 
 call plug#begin('~/.vim/plugged')
