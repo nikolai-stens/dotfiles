@@ -146,7 +146,21 @@ function! Build()
 	" legge til at outputten legges til i en log-fil som overskrides hver gang
 	" jeg kjører. må også se om jeg kan få den til å kjøre raskere, er veldig
 	" treg nå....
-	:vnew|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
+	if tabpagewinnr(tabpagenr(), '$') == 1
+		:call system('del w:\build\build.log')
+		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
+		:w
+		:execute "normal \<C-w>\<C-w>"
+	elseif tabpagewinnr(tabpagenr(), '$') == 2
+		if winnr() == winnr('$')
+			:call ToggleSplits()
+			:call Build()
+			:call SwapSplits()
+		else
+			:call ToggleSplits()
+			:call Build()
+		endif
+	endif
 endfunction
 
 " different remapped keys
