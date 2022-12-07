@@ -22,6 +22,7 @@ endif
 
 
 imap Îy <BS> 
+set cursorline
 
 function! SwapSplits()
 	" legge til så denne ikke kjører når det ikke er kun 2 splits
@@ -173,13 +174,16 @@ nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap <C-J> :bnext<CR>
 nnoremap <C-K> :bprev<CR>
 
+" fjerne hjelpmenyen fra K
+nnoremap K kJ
+vnoremap K kJ
 
 " typos
 :command! WQ wq
 :command! Wq wq
 :command! W w
 :command! Q q
-
+"
 " lettere å copypaste vanlig register
 nnoremap <A-c> "+y
 nnoremap <A-v> "+p
