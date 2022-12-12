@@ -24,6 +24,12 @@ endif
 imap Îy <BS> 
 set cursorline
 
+function! CheckIndent()
+	const indent_no = indent(line("."))
+	echo indent_no
+endfunction
+
+
 function! SwapSplits()
 	" legge til så denne ikke kjører når det ikke er kun 2 splits
 	const current_buffer = bufnr("%")
