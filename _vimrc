@@ -4,9 +4,10 @@ set relativenumber
 set encoding=utf-8
 set autoindent 
 set termguicolors
+set nowrap
 
 
-if has('gui')                    " gVim specific stuff
+if has('gui')                " gVim specific stuff
 	set guifont=Consolas:h14 " set font and font size
 	set guioptions-=T        " remove toolbar
 	set guioptions-=r        " remove right toolbar
@@ -23,6 +24,7 @@ endif
 
 imap Îy <BS> 
 set cursorline
+
 
 function! CheckIndent()
 	const indent_no = indent(line("."))
