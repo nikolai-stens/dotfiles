@@ -25,7 +25,6 @@ endif
 imap Îy <BS> 
 set cursorline
 
-
 function! CheckIndent()
 	const indent_no = indent(line("."))
 	echo indent_no
@@ -124,6 +123,11 @@ nnoremap <A-Space> :call ToggleSplits()<CR>
 nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
+
+
+"autocomplete med tab
+inoremap <Tab> <C-n>
+inoremap <S-Tab> <C-p>
 
 filetype plugin indent on
 syntax on
