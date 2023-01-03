@@ -177,7 +177,6 @@ function! Build()
 endfunction
 
 " different remapped keys
-nnoremap <C-n> :NERDTreeToggle<CR>
 nnoremap <Tab> <C-w><C-w>
 " nnoremap <C-t> :!python %<CR>
 nnoremap <C-t> :call Build()<CR>
