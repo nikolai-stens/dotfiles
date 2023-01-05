@@ -129,6 +129,7 @@ nnoremap <A-u> :call SwapSplits()<CR>
 inoremap <Tab> <C-n>
 inoremap <S-Tab> <C-p>
 
+nnoremap zx 0wzs
 filetype plugin indent on
 syntax on
 
@@ -163,6 +164,7 @@ function! Build()
 		:call system('del w:\build\build.log')
 		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
 		:w
+		:set wrap
 		:execute "normal \<C-w>\<C-w>"
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		if winnr() == winnr('$')
