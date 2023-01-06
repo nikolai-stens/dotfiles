@@ -10,15 +10,22 @@ set nowrap
 if has('gui')                " gVim specific stuff
 	set guifont=Consolas:h14 " set font and font size
 	set guioptions-=T        " remove toolbar
-	set guioptions-=r        " remove right toolbar
-	set guioptions-=L        " remove left toolbar
+	set guioptions-=r        " remove right scrollbar
+	set guioptions-=L        " remove left scrollbar
 	set guioptions-=m        " remove menubar
 	set guioptions+=k        " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
-	cd w:\
+	cd w:\handmade\code
+	"let check_file = system(":f") | echo strtrans(check_file)  " prøvde å
+	"ikke få split når man åpner en fil direkte, og ikke gjennom netrw, funka
+	"ikke helt
+	"if check_file == ""
 	au VimEnter * topleft vsplit | e . " split screen på startup
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
+	endif
+	
+	
 endif
 
 
