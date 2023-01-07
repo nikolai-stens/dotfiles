@@ -3,6 +3,7 @@ set number
 set relativenumber
 set encoding=utf-8
 set autoindent 
+set cindent
 set termguicolors
 set nowrap
 
@@ -16,7 +17,7 @@ if has('gui')                " gVim specific stuff
 	set guioptions+=k        " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
-	cd w:\handmade\code
+	cd w:\handmade\code\
 	"let check_file = system(":f") | echo strtrans(check_file)  " prøvde å
 	"ikke få split når man åpner en fil direkte, og ikke gjennom netrw, funka
 	"ikke helt
@@ -24,8 +25,6 @@ if has('gui')                " gVim specific stuff
 	au VimEnter * topleft vsplit | e . " split screen på startup
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
 	"endif
-	
-	
 endif
 
 
@@ -63,7 +62,20 @@ function! NewFileLeft()
 		:topleft vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
-		:e .
+		try
+			:e .  
+		catch /E37:/ " No write since last change
+			echo "do you want to save the buffer? y/n "
+			let l:want_to_save = Confirm()
+			if l:want_to_save == 'y'
+				:w
+				:e .
+			elseif l:want_to_save == 'n'
+				:e! .
+			elseif l:want_to_save == 'e' 
+				redraw " for å få teksten til å forsvinne etter man avbryter
+			endif
+		endtry
 	endif
 endfunction
 
@@ -73,7 +85,7 @@ function! NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
 		try
-			:e .
+			:e .  
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -130,6 +142,19 @@ nnoremap <A-Space> :call ToggleSplits()<CR>
 nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
+
+nnoremap H 0
+nnoremap L $
+
+function! BetterInsert()
+	if getline('.') =~ '^\s*$'
+		call feedkeys('cc')
+	else
+		:startinsert
+	endif
+endfunction
+
+nnoremap i :call BetterInsert()<CR>
 
 
 "autocomplete med tab
@@ -251,11 +276,11 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'morhetz/gruvbox'
 " Plug 'preservim/nerdtree'
 Plug 'tpope/vim-surround'
-Plug 'rust-lang/rust.vim'
+"Plug 'rust-lang/rust.vim'
 "Plug 'sirver/ultisnips'
 "let g:UltiSnipsExpandTrigger = '<tab>'
 "let g:UltiSnipsJumpForwardTrigger = '<tab>'
 "let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 "let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
 call plug#end()
-colorscheme gruvbox
+colorscheme gruvbox 
