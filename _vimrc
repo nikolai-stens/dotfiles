@@ -23,7 +23,7 @@ if has('gui')                " gVim specific stuff
 	"if check_file == ""
 	au VimEnter * topleft vsplit | e . " split screen på startup
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
-	endif
+	"endif
 	
 	
 endif
