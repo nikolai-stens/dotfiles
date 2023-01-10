@@ -18,13 +18,8 @@ if has('gui')                " gVim specific stuff
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
 	cd w:\handmade\code\
-	"let check_file = system(":f") | echo strtrans(check_file)  " prøvde å
-	"ikke få split når man åpner en fil direkte, og ikke gjennom netrw, funka
-	"ikke helt
-	"if check_file == ""
-	au VimEnter * topleft vsplit | e . " split screen på startup
+	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
-	"endif
 endif
 
 
@@ -156,12 +151,13 @@ endfunction
 
 nnoremap i :call BetterInsert()<CR>
 
-
 "autocomplete med tab
 inoremap <Tab> <C-n>
 inoremap <S-Tab> <C-p>
 
+"sentrer skjermen på teksten horisontalt
 nnoremap zx 0wzs
+
 filetype plugin indent on
 syntax on
 
@@ -228,6 +224,9 @@ vnoremap K kJ
 :command! Wq wq
 :command! W w
 :command! Q q
+:command! WQA wqa
+:command! WQa wqa
+:command! Wqa wqa
 "
 " lettere å copypaste vanlig register
 nnoremap <A-c> "+y
@@ -270,17 +269,7 @@ let g:vimtex_compiler_latexmk = {
     \   '-interaction=nonstopmode',
     \ ],
     \}
-
-
-Plug 'arcticicestudio/nord-vim'
 Plug 'morhetz/gruvbox'
-" Plug 'preservim/nerdtree'
 Plug 'tpope/vim-surround'
-"Plug 'rust-lang/rust.vim'
-"Plug 'sirver/ultisnips'
-"let g:UltiSnipsExpandTrigger = '<tab>'
-"let g:UltiSnipsJumpForwardTrigger = '<tab>'
-"let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
-"let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
 call plug#end()
 colorscheme gruvbox 
