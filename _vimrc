@@ -184,16 +184,25 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
+:set switchbuf=vsplit
 function! Build()
-	" legge til at outputten legges til i en log-fil som overskrides hver gang
-	" jeg kjører. må også se om jeg kan få den til å kjøre raskere, er veldig
-	" treg nå....
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:call system('del w:\build\build.log')
-		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
-		:w
-		:set wrap
-		:execute "normal \<C-w>\<C-w>"
+		:let l:buildoutput = system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
+		:call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
+
+		:cg w:\build\build.log | redraw
+		:vert copen
+		:let g:errors=len(filter(getqflist(), 'v:val.valid'))
+		:setlocal statusline=\ \ %f%=%{g:errors}\ errors\ 
+		:exe "normal \<C-w>="
+		:setlocal wrap
+		:winc w "flytter cursor tilbake
+		
+		"gamle løsningen under:
+		":copen
+		":vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
+		":w
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		if winnr() == winnr('$')
 			:call ToggleSplits()
@@ -208,6 +217,9 @@ endfunction
 
 " different remapped keys
 nnoremap <Tab> <C-w><C-w>
+nnoremap <S-Tab> <C-w>W
+
+
 " nnoremap <C-t> :!python %<CR>
 nnoremap <C-t> :call Build()<CR>
 "nnoremap % :source %<CR>
