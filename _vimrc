@@ -22,6 +22,8 @@ if has('gui')                " gVim specific stuff
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
 endif
 
+" fjerner autokommentering når man går til neste linje
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 imap Îy <BS> 
 set cursorline
