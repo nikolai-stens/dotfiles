@@ -194,6 +194,7 @@ function! Build()
 		:call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
 
 		:cg w:\build\build.log | redraw
+		":botright cwindow
 		:vert copen
 		:let g:errors=len(filter(getqflist(), 'v:val.valid'))
 		:setlocal statusline=\ \ %f%=%{g:errors}\ errors\ 
@@ -216,7 +217,6 @@ function! Build()
 		endif
 	endif
 endfunction
-
 " different remapped keys
 nnoremap <Tab> <C-w><C-w>
 nnoremap <S-Tab> <C-w>W
@@ -285,5 +285,6 @@ let g:vimtex_compiler_latexmk = {
     \}
 Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
+"Plug 'yssl/QFEnter'
 call plug#end()
 colorscheme gruvbox 
