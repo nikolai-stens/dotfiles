@@ -22,8 +22,12 @@ if has('gui')                " gVim specific stuff
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
 endif
 
+filetype plugin indent on
+syntax on
+
 " fjerner autokommentering når man går til neste linje
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd FileType * set formatoptions-=cro
+
 
 imap Îy <BS> 
 set cursorline
@@ -160,8 +164,6 @@ inoremap <S-Tab> <C-p>
 "sentrer skjermen på teksten horisontalt
 nnoremap zx 0wzs
 
-filetype plugin indent on
-syntax on
 
 set shiftwidth=4
 set tabstop=4
@@ -194,13 +196,13 @@ function! Build()
 		:call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
 
 		:cg w:\build\build.log | redraw
-		":botright cwindow
-		:vert copen
+		:botright cwindow
+		":vert copen
 		:let g:errors=len(filter(getqflist(), 'v:val.valid'))
 		:setlocal statusline=\ \ %f%=%{g:errors}\ errors\ 
-		:exe "normal \<C-w>="
-		:setlocal wrap
-		:winc w "flytter cursor tilbake
+		":exe "normal \<C-w>="
+		":setlocal wrap
+		":winc w "flytter cursor tilbake
 		
 		"gamle løsningen under:
 		":copen
@@ -285,6 +287,6 @@ let g:vimtex_compiler_latexmk = {
     \}
 Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
-"Plug 'yssl/QFEnter'
+Plug 'yssl/QFEnter'
 call plug#end()
 colorscheme gruvbox 
