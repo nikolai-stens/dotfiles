@@ -172,6 +172,7 @@ set tabstop=4
 cabbrev vb vert sb
 
 set hlsearch
+let @/ = "" " fjerner forrige søk når jeg resourcer vimrc
 set incsearch
 
 set noswapfile
@@ -188,15 +189,20 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
-:set switchbuf=vsplit
+autocmd BufRead,BufNewFile *.log :call ReadLogFile()
+function! ReadLogFile()
+	nnoremap <buffer> <CR> :call GotoError()<CR>
+	highlight ErrorFiles gui=bold,undercurl
+	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(/
+endfunction
 
-autocmd BufRead,BufNewFile *.log nnoremap <buffer> <CR> :call GotoError()<CR>
 function! GotoError()
 	" filnavn til feil i f-register
-	:redir @f> |.g/.:\(\\.*\\\).*\..*\ze(/echon matchstr(getline('.'),@/)|redir END
+	:redir @f> |.g/^.:\(\\.*\\\).*\..*\ze(/echon matchstr(getline('.'),@/)|redir END | redraw
 
 	"linjenr til feil i l-register
-	:redir @l> |.g/.:\(\\.*\\\).*\..*(\zs\d.*\ze)/echon matchstr(getline('.'),@/)|redir END
+	:redir @l> |.g/^.:\(\\.*\\\).*\..*(\zs\d.*\ze)/echon matchstr(getline('.'),@/)|redir END
+	:call clearmatches()
 
 	:winc p
 	:execute 'edit' @f
@@ -207,6 +213,7 @@ function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:call system('del w:\build\build.log')
 		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
+		:setlocal wrap
 		:w
 		":let l:buildoutput = system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
 		":call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
