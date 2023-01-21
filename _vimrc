@@ -64,7 +64,7 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-			:e .  
+			:E  
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -86,7 +86,7 @@ function! NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
 		try
-			:e .  
+			:E  
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
