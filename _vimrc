@@ -28,7 +28,6 @@ syntax on
 " fjerner autokommentering når man går til neste linje
 autocmd FileType * set formatoptions-=cro
 
-
 imap Îy <BS> 
 set cursorline
 
@@ -193,20 +192,23 @@ autocmd BufRead,BufNewFile *.log :call ReadLogFile()
 function! ReadLogFile()
 	nnoremap <buffer> <CR> :call GotoError()<CR>
 	highlight ErrorFiles gui=bold,undercurl
-	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(/
+	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(\d*)/
 endfunction
 
 function! GotoError()
-	" filnavn til feil i f-register
-	:redir @f> |.g/^.:\(\\.*\\\).*\..*\ze(/echon matchstr(getline('.'),@/)|redir END | redraw
+	try
+		" filnavn til feil i f-register
+		:redir @f> |.g/^.:\(\\.*\\\).*\..*\ze(\d*)/echon matchstr(getline('.'),@/)|redir END | redraw
 
-	"linjenr til feil i l-register
-	:redir @l> |.g/^.:\(\\.*\\\).*\..*(\zs\d.*\ze)/echon matchstr(getline('.'),@/)|redir END
-	:call clearmatches()
-
-	:winc p
-	:execute 'edit' @f
-	:execute @l
+		"linjenr til feil i l-register
+		:redir @l> |.g/^.:\(\\.*\\\).*\..*(\zs\d.*\ze):/echon matchstr(getline('.'),@/)|redir END
+		:call clearmatches()
+		:winc p
+		:w
+		:execute 'edit' @f
+		:execute @l
+	catch /E492:/
+	endtry
 endfunction
 
 function! Build()
@@ -241,7 +243,12 @@ function! Build()
 		endif
 	endif
 endfunction
-" different remapped keys
+
+" mister ctrl-i for å hoppe i jumplist når jeg remapper <tab>
+"går ikke å bare remappe til ctrl-i på nytt, så må ta noe annet
+nnoremap <C-p> <C-i> 
+
+"enklere navigering mellom vinduer
 nnoremap <Tab> <C-w><C-w>
 nnoremap <S-Tab> <C-w>W
 
@@ -269,6 +276,8 @@ vnoremap K kJ
 " lettere å copypaste vanlig register
 nnoremap <A-c> "+y
 nnoremap <A-v> "+p
+vnoremap <A-c> "+y
+vnoremap <A-v> "+p
 
 " flytte linjer opp eller ned
 nnoremap <A-j> :m .+1<CR>==
