@@ -143,7 +143,7 @@ nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
 
-nnoremap H 0
+nnoremap H 0w
 nnoremap L $
 
 function! BetterInsert()
