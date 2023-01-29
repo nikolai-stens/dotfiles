@@ -31,6 +31,22 @@ autocmd FileType * set formatoptions-=cro
 imap Îy <BS> 
 set cursorline
 
+function! CheckBrace()
+	"veldig janky, men match() returnerer tydeligvis -1 hvis den
+	"ikke finner en match og 0 hvis det matcher. må derfor plusse 
+	"på 1 for å få if til å fungere riktig.
+	"regexen sjekker om det er en høyre-parantes av noe slag
+	if match(getline(".")[col(".")-1], ')\|]\|}') +1
+		:exe 'normal %v0"by%'
+		:echomsg @b
+	else
+		:redraw!
+	endif
+endfunction
+
+
+nnoremap <A-]> :call CheckBrace()<CR>
+
 function! CheckIndent()
 	const indent_no = indent(line("."))
 	echo indent_no
@@ -143,7 +159,14 @@ nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
 
-nnoremap H 0w
+function! MoveLeft()
+	:exe "normal 0"
+	if getline(".")[col(".")-1] == "\t"
+		:exe "normal w"
+	endif
+endfunction
+
+nnoremap H :call MoveLeft()<CR>
 nnoremap L $
 
 function! BetterInsert()
