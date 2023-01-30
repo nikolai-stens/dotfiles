@@ -37,8 +37,11 @@ function! CheckBrace()
 	"på 1 for å få if til å fungere riktig.
 	"regexen sjekker om det er en høyre-parantes av noe slag
 	if match(getline(".")[col(".")-1], ')\|]\|}') +1
-		:exe 'normal %v0"by%'
-		:echomsg @b
+		:exe 'normal %"byy%'
+		if match(@b,'^[ \t^I]*\((\|[\|{\)') +1
+			:exe 'normal %k"byyj%"'
+		endif
+	:echomsg trim(@b)
 	else
 		:redraw!
 	endif
