@@ -162,6 +162,7 @@ nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
 
+
 function! MoveLeft()
 	:exe "normal 0"
 	if getline(".")[col(".")-1] == "\t"
@@ -213,6 +214,12 @@ set wildmenu
 "nnoremap <space> za
 "vnoremap <space> zf
 set splitright
+
+autocmd Syntax cpp syn match cNOTE "NOTE"
+autocmd Syntax cpp hi cNOTE gui=bold guifg=green
+
+autocmd Syntax cpp syn match cTODO "TODO"
+autocmd Syntax cpp hi cTODO gui=bold guifg=red
 
 autocmd BufRead,BufNewFile *.log :call ReadLogFile()
 function! ReadLogFile()
@@ -322,6 +329,10 @@ nnoremap <C-Space> ?
 
 " for marks
 nnoremap , `
+nnoremap d, d`
+nnoremap c, c`
+nnoremap y, y`
+nnoremap g, g`
 
 " plugins 
 call plug#begin('~/.vim/plugged')
