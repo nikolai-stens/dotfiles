@@ -218,8 +218,8 @@ set splitright
 autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
 autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
 
-autocmd Syntax cpp hi NoteMarker gui=bold guifg=green
-autocmd Syntax cpp hi TodoMarker gui=bold guifg=red
+autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
+autocmd Syntax cpp hi TodoMarker gui=bold guifg=Red
 
 autocmd BufRead,BufNewFile *.log :call ReadLogFile()
 function! ReadLogFile()
