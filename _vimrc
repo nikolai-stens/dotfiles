@@ -215,11 +215,11 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
-autocmd Syntax cpp syn match cNOTE "NOTE"
-autocmd Syntax cpp hi cNOTE gui=bold guifg=green
+autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
+autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
 
-autocmd Syntax cpp syn match cTODO "TODO"
-autocmd Syntax cpp hi cTODO gui=bold guifg=red
+autocmd Syntax cpp hi NoteMarker gui=bold guifg=green
+autocmd Syntax cpp hi TodoMarker gui=bold guifg=red
 
 autocmd BufRead,BufNewFile *.log :call ReadLogFile()
 function! ReadLogFile()
@@ -323,7 +323,7 @@ vnoremap <A-k> :m '<-2<CR>gv=gv
 nnoremap <A-p> vip
 
 
-set ignorecase
+"set ignorecase
 nnoremap <Space> /
 nnoremap <C-Space> ?
 
