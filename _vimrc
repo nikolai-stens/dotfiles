@@ -1,11 +1,12 @@
 set nocompatible 
-set number
-set relativenumber
+"set number
+"set relativenumber
 set encoding=utf-8
 set autoindent 
 set cindent
 set termguicolors
 set nowrap
+
 
 
 if has('gui')                " gVim specific stuff
@@ -75,6 +76,8 @@ function! SwapSplits()
 	endtry
 endfunction
 
+
+
 function! NewFileLeft()
 	" må legge til catch til E37
 	if tabpagewinnr(tabpagenr(), '$') == 1
@@ -82,7 +85,7 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-			:E  
+			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -93,6 +96,7 @@ function! NewFileLeft()
 				:e! .
 			elseif l:want_to_save == 'e' 
 				redraw " for å få teksten til å forsvinne etter man avbryter
+
 			endif
 		endtry
 	endif
@@ -163,6 +167,16 @@ nnoremap <A-n> :call NewFileLeft()<CR>
 nnoremap <A-u> :call SwapSplits()<CR>
 
 
+"NETRW greier
+
+"set hidden ødelegger build.bat filen, orker ikke deale med det
+" får heller bare være litt jævlig med netrw
+set nohidden
+let g:netrw_banner = 0
+let g:netrw_browse_split = 0
+
+
+
 function! MoveLeft()
 	:exe "normal 0"
 	if getline(".")[col(".")-1] == "\t"
@@ -172,6 +186,8 @@ endfunction
 
 nnoremap H :call MoveLeft()<CR>
 nnoremap L $
+nnoremap <C-h> b
+nnoremap <C-l> w
 
 function! BetterInsert()
 	if getline('.') =~ '^\s*$'
@@ -294,6 +310,21 @@ nnoremap <C-t> :call Build()<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap <C-J> :bnext<CR>
 nnoremap <C-K> :bprev<CR>
+
+
+"noe med det verste jeg har vært med på:
+"function! Awful(string)
+"	return fnamemodify(a:string.name,":t")
+"endfunction
+"function! NextBuf()
+"	setlocal statusline=
+"	for buf in getbufinfo({'buflisted':1})
+"		echo fnamemodify(buf.name,":t")
+"		"let @f = fnamemodify(buf.name,":t")
+"		setlocal statusline+=%{Awful(buf)}\ 	
+"	endfor
+"endfunction
+
 
 " fjerne hjelpmenyen fra K
 nnoremap K kJ
