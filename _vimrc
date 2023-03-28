@@ -6,6 +6,7 @@ set autoindent
 set cindent
 set termguicolors
 set nowrap
+set belloff=all
 
 
 
@@ -207,6 +208,7 @@ inoremap <S-Tab> <C-p>
 nnoremap zx 0wzs
 
 
+set expandtab
 set shiftwidth=4
 set tabstop=4
 
@@ -262,6 +264,7 @@ function! GotoError()
 	endtry
 endfunction
 
+if isdirectory('w:')
 function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:call system('del w:\build\build.log')
@@ -294,6 +297,7 @@ function! Build()
 		endif
 	endif
 endfunction
+endif
 
 " mister ctrl-i for å hoppe i jumplist når jeg remapper <tab>
 "går ikke å bare remappe til ctrl-i på nytt, så må ta noe annet
