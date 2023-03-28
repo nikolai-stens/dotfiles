@@ -19,7 +19,9 @@ if has('gui')                " gVim specific stuff
 	set guioptions+=k        " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
+	if isdirectory('w:')
 	cd w:\handmade\code\
+endif
 	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
 endif
@@ -395,3 +397,4 @@ Plug 'tpope/vim-surround'
 Plug 'yssl/QFEnter'
 call plug#end()
 colorscheme gruvbox 
+set bg=dark
