@@ -182,7 +182,7 @@ let g:netrw_browse_split = 0
 
 function! MoveLeft()
 	:exe "normal 0"
-	if getline(".")[col(".")-1] == "\t"
+	if getline(".")[col(".")-1] == " "
 		:exe "normal w"
 	endif
 endfunction
@@ -271,7 +271,7 @@ function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:call system('del w:\build\build.log')
 		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
-		:setlocal wrap
+		":setlocal wrap
 		:w
 		":let l:buildoutput = system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
 		":call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
