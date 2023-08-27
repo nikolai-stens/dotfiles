@@ -163,12 +163,28 @@ function! Confirm()
 	endif
 endfunction
 
+function! ToggleHFile()
+    let l:filename = @%
+    if match(l:filename, '.*\.cpp') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zecpp') 
+        let l:hfile = l:file . 'h'
+        :w
+        :execute(':edit '. expand(l:hfile))
+    endif
+    if match(l:filename, '.*\.h') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zeh') 
+        let l:cppfile = l:file . 'cpp'
+        :w
+        :execute(':edit '. expand(l:cppfile))
+    endif
+endfunction
+
 " prøver å gjøre det smudere å åpne filer
 nnoremap <A-Space> :call ToggleSplits()<CR>
 nnoremap <A-m> :call NewFileRight()<CR>
 nnoremap <A-n> :call NewFileLeft()<CR> 
 nnoremap <A-u> :call SwapSplits()<CR>
-
+nnoremap <C-q> :call ToggleHFile()<CR>
 
 "NETRW greier
 
