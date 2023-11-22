@@ -330,8 +330,10 @@ nnoremap <S-Tab> <C-w>W
 nnoremap <C-t> :call Build()<CR>
 "nnoremap % :source %<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
-nnoremap <C-J> :bnext<CR>
-nnoremap <C-K> :bprev<CR>
+nnoremap <C-J> }
+nnoremap <C-K> {
+" nnoremap <C-J> :bnext<CR>
+" nnoremap <C-K> :bprev<CR>
 
 
 "noe med det verste jeg har vært med på:
