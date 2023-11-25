@@ -286,7 +286,7 @@ if isdirectory('w:')
 function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:call system('del w:\build\build.log')
-		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat') | redraw
+		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
 		":setlocal wrap
 		:w
 		":let l:buildoutput = system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
