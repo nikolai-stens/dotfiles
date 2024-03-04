@@ -225,6 +225,8 @@ inoremap <S-Tab> <C-p>
 "sentrer skjermen på teksten horisontalt
 nnoremap zx 0wzs
 
+nnoremap <C-f> :find ./**/*
+
 
 set expandtab
 set shiftwidth=4
