@@ -253,14 +253,6 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
-autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
-autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
-autocmd Syntax cpp syntax keyword ImportantMarker IMPORTANT containedin=.*Comment,vimCommentTitle,cCommentL
-
-autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
-autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
-autocmd Syntax cpp hi ImportantMarker gui=bold guifg=Yellow
-
 autocmd BufRead,BufNewFile *.log :call ReadLogFile()
 function! ReadLogFile()
 	nnoremap <buffer> <CR> :call GotoError()<CR>
@@ -393,28 +385,71 @@ nnoremap c, c`
 nnoremap y, y`
 nnoremap g, g`
 
+"fjern highlighting etter søk
+augroup AutoHighlighting
+    au!
+    autocmd CmdlineEnter /,\? set hlsearch
+    autocmd CmdlineLeave /,\? set nohlsearch
+augroup END
+nnoremap <leader>h <cmd>set hlsearch!<cr>
+
 " plugins 
-call plug#begin('~/.vim/plugged')
-Plug 'lervag/vimtex'
-let g:tex_flavor='latex'
-let g:vimtex_view_method='zathura'
-let g:vimtex_quickfix_mode=0
-set conceallevel=1
-let g:tex_conceal='abdmgs'
-let g:vimtex_compiler_method = 'latexmk'
-let g:vimtex_compiler_latexmk = {
-    \ 'options' : [
-    \   '-pdf',
-    \   '-shell-escape',
-    \   '-verbose',
-    \   '-file-line-error',
-    \   '-synctex=1',
-    \   '-interaction=nonstopmode',
-    \ ],
-    \}
-Plug 'morhetz/gruvbox'
-Plug 'tpope/vim-surround'
-Plug 'yssl/QFEnter'
-call plug#end()
-colorscheme gruvbox 
-set bg=dark
+"call plug#begin('~/.vim/plugged')
+"Plug 'lervag/vimtex'
+"let g:tex_flavor='latex'
+"let g:vimtex_view_method='zathura'
+"let g:vimtex_quickfix_mode=0
+"set conceallevel=1
+"let g:tex_conceal='abdmgs'
+"let g:vimtex_compiler_method = 'latexmk'
+"let g:vimtex_compiler_latexmk = {
+"    \ 'options' : [
+"    \   '-pdf',
+"    \   '-shell-escape',
+"    \   '-verbose',
+"    \   '-file-line-error',
+"    \   '-synctex=1',
+"    \   '-interaction=nonstopmode',
+"    \ ],
+"    \}
+"Plug 'morhetz/gruvbox'
+"Plug 'tpope/vim-surround'
+"Plug 'yssl/QFEnter'
+"call plug#end()
+"colorscheme gruvbox 
+"set bg=dark
+
+hi Normal       guibg=#222222 guifg=#ffe599
+hi VertSplit    guibg=#6ab26a guifg=#222222
+hi Cursor       guibg=#6ab26a
+hi lCursor                    guifg=#b26ab2 
+hi CursorLine   guibg=#111111
+hi MatchParen   guibg=#f5f5f5
+hi StatusLine   guibg=#6ab26a guifg=#555555 
+hi StatusLineNC guibg=#6ab26a guifg=#333333
+hi Search       guibg=#6a6ab2
+hi Comment                    guifg=#9ccc9c
+hi EndOfBuffer                guifg=#9ccc9c
+
+hi Constant                   guifg=#6a6ab2
+hi Identifier                 guifg=#6a6ab2
+hi Statement                  guifg=#b26a6a
+hi PreProc                    guifg=#b26ab2
+hi Type                       guifg=#6ab26a
+
+"hi WildMenu     guibg=#222222 guifg=#6ab26a
+hi PMenu        guibg=#222222 guifg=#6ab26a
+hi PMenuSel     guibg=#222222 guifg=#b26ab2
+
+hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
+hi Error        guibg=#222222 guifg=#b26a6a gui=bold
+
+autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
+"autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
+autocmd Syntax cpp syntax keyword ImportantMarker IMPORTANT containedin=.*Comment,vimCommentTitle,cCommentL
+
+autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
+"autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
+autocmd Syntax cpp hi ImportantMarker gui=bold guifg=Yellow
+
+
