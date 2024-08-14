@@ -3,11 +3,12 @@ set nocompatible
 "set relativenumber
 set encoding=utf-8
 set autoindent 
-set cindent
 set termguicolors
 set nowrap
 set belloff=all
 
+set cindent
+set cino==0,(0 "brace liner opp med case, newline liner opp med åpen parantes
 
 
 if has('gui')                " gVim specific stuff
@@ -416,40 +417,59 @@ nnoremap <leader>h <cmd>set hlsearch!<cr>
 "Plug 'tpope/vim-surround'
 "Plug 'yssl/QFEnter'
 "call plug#end()
-"colorscheme gruvbox 
-"set bg=dark
 
-hi Normal       guibg=#222222 guifg=#ffe599
-hi VertSplit    guibg=#6ab26a guifg=#222222
-hi Cursor       guibg=#6ab26a
-hi lCursor                    guifg=#b26ab2 
-hi CursorLine   guibg=#111111
-hi MatchParen   guibg=#f5f5f5
-hi StatusLine   guibg=#6ab26a guifg=#555555 
-hi StatusLineNC guibg=#6ab26a guifg=#333333
-hi Search       guibg=#6a6ab2
-hi Comment                    guifg=#9ccc9c
-hi EndOfBuffer                guifg=#9ccc9c
 
-hi Constant                   guifg=#6a6ab2
-hi Identifier                 guifg=#6a6ab2
-hi Statement                  guifg=#b26a6a
-hi PreProc                    guifg=#b26ab2
-hi Type                       guifg=#6ab26a
+let R = '6a'
+let G = 'b2'
+let B = '6a'
 
-"hi WildMenu     guibg=#222222 guifg=#6ab26a
-hi PMenu        guibg=#222222 guifg=#6ab26a
-hi PMenuSel     guibg=#222222 guifg=#b26ab2
+exe "let xR = '0x".R."'"
+exe "let xG = '0x".G."'"
+exe "let xB = '0x".B."'"
+let xR = 0xff - xR
+let xG = 0xff - xG
+let xB = 0xff - xB
 
-hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
-hi Error        guibg=#222222 guifg=#b26a6a gui=bold
+exe "let ComplementaryColor = '#" . printf('%x',xR) . printf('%x',xG) .  printf('%x',xB) . "'"
+
+exe "let ColorTriad1 = '#" . R . G . B . "'"
+exe "let ColorTriad2 = '#" . B . R . G . "'"
+exe "let ColorTriad3 = '#" . G . B . R . "'"
+
+let TextColor          = '#ffe599'
+let BackgroundColor1   = '#222222'
+let BackgroundColor2   = '#333333'
+let BackgroundColor3   = '#555555'
+
+exe 'hi Normal        guibg=' . BackgroundColor1 . ' guifg=' . TextColor
+exe 'hi VertSplit     guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
+exe 'hi Cursor        guibg=' . ColorTriad1
+exe 'hi lCursor                                      guifg=' . ColorTriad3
+exe 'hi CursorLine    guibg=' . BackgroundColor1
+exe 'hi MatchParen    guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
+exe 'hi StatusLine    guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
+exe 'hi StatusLineNC  guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
+exe 'hi Comment                                      guifg=' . ComplementaryColor
+exe 'hi EndOfBuffer                                  guifg=' . ComplementaryColor
+
+exe 'hi Constant                                     guifg=' . ColorTriad2
+exe 'hi Identifier                                   guifg=' . ColorTriad2
+exe 'hi Statement                                    guifg=' . ColorTriad3
+exe 'hi PreProc                                      guifg=' . ColorTriad3
+exe 'hi Type                                         guifg=' . ColorTriad1
+
+exe 'hi PMenu         guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad1
+exe 'hi PMenuSel      guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
+
+"hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
+"hi Error        guibg=#222222 guifg=#b26a6a gui=bold
 
 autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
-"autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
+autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
 autocmd Syntax cpp syntax keyword ImportantMarker IMPORTANT containedin=.*Comment,vimCommentTitle,cCommentL
 
 autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
-"autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
+autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
 autocmd Syntax cpp hi ImportantMarker gui=bold guifg=Yellow
 
 
