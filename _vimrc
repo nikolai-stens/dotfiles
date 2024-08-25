@@ -195,8 +195,6 @@ set nohidden
 let g:netrw_banner = 0
 let g:netrw_browse_split = 0
 
-
-
 function! MoveLeft()
 	:exe "normal 0"
 	if getline(".")[col(".")-1] == " "
@@ -208,6 +206,7 @@ nnoremap H :call MoveLeft()<CR>
 nnoremap L $
 nnoremap <C-h> b
 nnoremap <C-l> w
+nnoremap <C-[> <C-o> 
 
 function! BetterInsert()
 	if getline('.') =~ '^\s*$'
