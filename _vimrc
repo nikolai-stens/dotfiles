@@ -89,7 +89,7 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-			:E
+			:E .
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -112,7 +112,7 @@ function! NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
 		try
-			:E  
+			:E .
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -195,6 +195,26 @@ set nohidden
 let g:netrw_banner = 0
 let g:netrw_browse_split = 0
 
+augroup netrw_mapping
+    autocmd!
+    autocmd filetype netrw call NetrwMapping()
+augroup END
+
+function! NetrwMapping()
+    noremap <buffer> <Esc> :Rex<CR>
+    redraw
+endfunction
+
+nnoremap - :E<CR>
+
+"function! CallPopup()
+"    let winid = popup_create('hello', {})
+"    let bufnr = winbufnr(winid)
+"    call setbufline(bufnr, 2, 'second line')
+"endfunction
+"
+"nnoremap <C-1> :call CallPopup()<CR>
+
 function! MoveLeft()
 	:exe "normal 0"
 	if getline(".")[col(".")-1] == " "
@@ -206,7 +226,7 @@ nnoremap H :call MoveLeft()<CR>
 nnoremap L $
 nnoremap <C-h> b
 nnoremap <C-l> w
-nnoremap <C-[> <C-o> 
+"nnoremap <C-[> <C-o> "dette remapper esc... sykt irriterende
 
 function! BetterInsert()
 	if getline('.') =~ '^\s*$'
@@ -457,8 +477,8 @@ exe 'hi Statement                                    guifg=' . ColorTriad3
 exe 'hi PreProc                                      guifg=' . ColorTriad3
 exe 'hi Type                                         guifg=' . ColorTriad1
 
-exe 'hi PMenu         guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad1
-exe 'hi PMenuSel      guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
+exe 'hi PMenu         guibg=' . BackgroundColor2 . ' guifg=' . ColorTriad1
+exe 'hi PMenuSel      guibg=' . BackgroundColor3 . ' guifg=' . ColorTriad3
 
 "hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
 "hi Error        guibg=#222222 guifg=#b26a6a gui=bold
