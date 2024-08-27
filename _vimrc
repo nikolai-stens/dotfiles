@@ -89,7 +89,8 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-			:E .
+            :NetrwC
+			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -112,7 +113,8 @@ function! NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
 		try
-			:E .
+            :NetrwC
+			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
 			let l:want_to_save = Confirm()
@@ -346,8 +348,8 @@ nnoremap <C-t> :call Build()<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap <C-J> }
 nnoremap <C-K> {
-" nnoremap <C-J> :bnext<CR>
-" nnoremap <C-K> :bprev<CR>
+nnoremap <C-Tab> :bnext<CR>
+nnoremap <C-S-Tab> :bprev<CR>
 
 
 "noe med det verste jeg har vært med på:
