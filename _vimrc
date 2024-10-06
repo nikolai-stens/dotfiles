@@ -439,6 +439,22 @@ nnoremap <leader>h <cmd>set hlsearch!<cr>
 "Plug 'yssl/QFEnter'
 "call plug#end()
 
+"CTERM colors
+
+
+let CtermColor1 = "DarkGreen"
+let CtermColor2 = "DarkBlue"
+let CtermColor3 = "DarkRed"
+
+let CtermTextColor = "DarkYellow"
+let CtermBackgroundColor1 = "Black"
+let CtermBackgroundColor2 = "DarkGray"
+let CtermBackgroundColor3 = "Gray"
+
+let CtermCompColor = "DarkMagenta"
+
+
+"GUI colors
 
 let R = '6a'
 let G = 'b2'
@@ -462,25 +478,27 @@ let BackgroundColor1   = '#222222'
 let BackgroundColor2   = '#333333'
 let BackgroundColor3   = '#555555'
 
-exe 'hi Normal        guibg=' . BackgroundColor1 . ' guifg=' . TextColor
-exe 'hi VertSplit     guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
-exe 'hi Cursor        guibg=' . ColorTriad1
-exe 'hi lCursor                                      guifg=' . ColorTriad3
-exe 'hi CursorLine    guibg=' . BackgroundColor1
-exe 'hi MatchParen    guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
-exe 'hi StatusLine    guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
-exe 'hi StatusLineNC  guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
-exe 'hi Comment                                      guifg=' . ComplementaryColor
-exe 'hi EndOfBuffer                                  guifg=' . ComplementaryColor
+"Setting colors
 
-exe 'hi Constant                                     guifg=' . ColorTriad2
-exe 'hi Identifier                                   guifg=' . ColorTriad2
-exe 'hi Statement                                    guifg=' . ColorTriad3
-exe 'hi PreProc                                      guifg=' . ColorTriad3
-exe 'hi Type                                         guifg=' . ColorTriad1
+exe 'hi Normal        ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermTextColor .        ' guibg=' . BackgroundColor1 . ' guifg=' . TextColor
+exe 'hi VertSplit     ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
+exe 'hi Cursor        ctermbg=' . CtermColor1 .                                                 ' guibg=' . ColorTriad1
+exe 'hi lCursor                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 .                                       ' guibg=' . BackgroundColor1
+exe 'hi MatchParen    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermColor3 .           ' guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
+exe 'hi StatusLine    ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor3 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
+exe 'hi StatusLineNC  ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor2 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
+exe 'hi Comment                                             ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
+exe 'hi EndOfBuffer                                         ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
 
-exe 'hi PMenu         guibg=' . BackgroundColor2 . ' guifg=' . ColorTriad1
-exe 'hi PMenuSel      guibg=' . BackgroundColor3 . ' guifg=' . ColorTriad3
+exe 'hi Constant                                            ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
+exe 'hi Identifier                                          ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
+exe 'hi Statement                                           ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi PreProc                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi Type                                                ctermfg=' . CtermColor1 .                                          ' guifg=' . ColorTriad1
+
+exe 'hi PMenu         ctermbg=' . CtermBackgroundColor2 . ' ctermfg=' . CtermColor1 .          ' guibg=' . BackgroundColor2 . ' guifg=' . ColorTriad1
+exe 'hi PMenuSel      ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermColor3 .          ' guibg=' . BackgroundColor3 . ' guifg=' . ColorTriad3
 
 "hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
 "hi Error        guibg=#222222 guifg=#b26a6a gui=bold
