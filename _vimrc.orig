@@ -21,12 +21,16 @@ if has('gui')                " gVim specific stuff
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
 	if isdirectory('w:')
+<<<<<<< HEAD
 	cd w:\skriv\code\
+=======
+	cd w:\handmade\code\
 else
     nnoremap m :call NewFileRight()<CR>
     nnoremap n :call NewFileLeft()<CR>
     nnoremap ] :call CheckBrace()<CR>
     nnoremap u :call SwapSplits()<CR>
+>>>>>>> bd4d86faa3e9b378b9cc581f441e88d45b8277d7
 endif
 	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
