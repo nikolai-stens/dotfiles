@@ -22,6 +22,11 @@ if has('gui')                " gVim specific stuff
 	set backspace=indent,eol,start " fikse så backspace fungerer
 	if isdirectory('w:')
 	cd w:\handmade\code\
+else
+    nnoremap m :call NewFileRight()<CR>
+    nnoremap n :call NewFileLeft()<CR>
+    nnoremap ] :call CheckBrace()<CR>
+    nnoremap u :call SwapSplits()<CR>
 endif
 	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
@@ -79,8 +84,6 @@ function! SwapSplits()
 		:exe "normal \<C-w>\<C-w>"
 	endtry
 endfunction
-
-
 
 function! NewFileLeft()
 	" må legge til catch til E37
@@ -484,7 +487,7 @@ exe 'hi Normal        ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermTex
 exe 'hi VertSplit     ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
 exe 'hi Cursor        ctermbg=' . CtermColor1 .                                                 ' guibg=' . ColorTriad1
 exe 'hi lCursor                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
-exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 .                                       ' guibg=' . BackgroundColor1
+exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermBackgroundColor1   ' guibg=' . BackgroundColor1 .                                ' cterm = none' 
 exe 'hi MatchParen    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermColor3 .           ' guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
 exe 'hi StatusLine    ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor3 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
 exe 'hi StatusLineNC  ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor2 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
