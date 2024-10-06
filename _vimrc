@@ -21,7 +21,7 @@ if has('gui')                " gVim specific stuff
 	au GUIenter * simalt ~x  " åpne i maximized vindu
 	set backspace=indent,eol,start " fikse så backspace fungerer
 	if isdirectory('w:')
-	cd w:\handmade\code\
+	cd w:\skriv\code\
 endif
 	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
 	wincmd h " bytt til venstre vindu etter å ha splittet vindu
@@ -89,7 +89,7 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-            :NetrwC
+            ":NetrwC
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
@@ -113,7 +113,7 @@ function! NewFileRight()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-l>" 
 		try
-            :NetrwC
+            ":NetrwC
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
