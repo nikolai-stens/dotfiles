@@ -351,9 +351,10 @@ nnoremap <C-t> :call Build()<CR>
 nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap <C-J> }
 nnoremap <C-K> {
-nnoremap <C-Tab> :bnext<CR>
-nnoremap <C-S-Tab> :bprev<CR>
 
+set wildcharm=<C-z>
+nnoremap <C-Tab> :b <C-z>
+nnoremap <C-S-Tab> :b <C-z>
 
 "noe med det verste jeg har vært med på:
 "function! Awful(string)
