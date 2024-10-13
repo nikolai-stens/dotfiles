@@ -12,7 +12,7 @@ set cino==0,(0 "brace liner opp med case, newline liner opp med åpen parantes
 
 
 if has('gui')                " gVim specific stuff
-	set guifont=Consolas:h14 " set font and font size
+	set guifont=Liberation\ Mono:h12 " set font and font size
 	set guioptions-=T        " remove toolbar
 	set guioptions-=r        " remove right scrollbar
 	set guioptions-=L        " remove left scrollbar
@@ -199,6 +199,7 @@ nnoremap <C-q> :call ToggleHFile()<CR>
 set nohidden
 let g:netrw_banner = 0
 let g:netrw_browse_split = 0
+let g:netrw_use_errorwindow = 1
 
 augroup netrw_mapping
     autocmd!
