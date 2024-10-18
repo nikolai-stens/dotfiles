@@ -305,25 +305,15 @@ endfunction
 if isdirectory('w:')
 function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
-		:call system('del w:\build\build.log')
-		:vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
-		":setlocal wrap
-		:w
-		":let l:buildoutput = system('w:\handmade\misc\shell.bat & w:\handmade\code\build.bat')
-		":call writefile(split(l:buildoutput, "\n", 1),'w:\build\build.log')
-
-		":cg w:\build\build.log | redraw
-		":botright cwindow
-		":vert copen
-		":let g:errors=len(filter(getqflist(), 'v:val.valid'))
-		":setlocal statusline=\ \ %f%=%{g:errors}\ errors\ 
-		":exe "normal \<C-w>="
-		":setlocal wrap
-		":winc w "flytter cursor tilbake
-		
-		"gamle løsningen under:
-		":copen
-		":w
+        if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h' 
+            :call system('del w:\build\build.log')
+            :vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
+            :w
+        elseif &filetype ==# 'tex' 
+            :call system('del w:\kompendium\build.log')
+            :vsplit w:\kompendium\build.log|put=system('w:\kompendium\build.bat') | redraw
+            :w
+        endif
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		if winnr() == winnr('$')
 			:call ToggleSplits()
