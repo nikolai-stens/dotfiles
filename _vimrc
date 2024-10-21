@@ -12,7 +12,7 @@ set belloff=all
 "
 " - fortsatt se om jeg klarer å fjerne den feilmeldingen fra netrw om at vinduet ikke eksisterer eller hva det er 
 "
-"
+" - gjøre det mulig å hoppe rett fra søk i SearchFiles til riktig fil.
 "
 "
 "
@@ -344,21 +344,18 @@ command! -bar -nargs=1 SearchFiles
             \ call SearchFiles(<q-args>)
 
 function! SearchFiles(string)
-    let cmd = 'findstr -s -n -i -l test *.c'
-    "let cmd = cmd . a:string . ' *.c'
-    let cmd_output = system(cmd)
     if tabpagewinnr(tabpagenr(), '$') == 1
         :call system('del w:\vim.search')
-        :vsplit w:\vim.search|put=cmd_output|redraw
+        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *h *c *hpp *cpp')|redraw
         :w
     elseif tabpagewinnr(tabpagenr(), '$') == 2
         if winnr() == winnr('$')
             :call ToggleSplits()
-            :call SearchFiles()
+            :call SearchFiles(a:string)
             :call SwapSplits()
         else
             :call ToggleSplits()
-			:call SearchFiles()
+			:call SearchFiles(a:string)
         endif
     endif
 endfunction
