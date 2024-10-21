@@ -7,6 +7,19 @@ set termguicolors
 set nowrap
 set belloff=all
 
+
+" TODO:
+"
+" - fortsatt se om jeg klarer å fjerne den feilmeldingen fra netrw om at vinduet ikke eksisterer eller hva det er 
+"
+"
+"
+"
+"
+"
+
+
+
 set cindent
 set cino==0,(0 "brace liner opp med case, newline liner opp med åpen parantes
 
@@ -322,10 +335,36 @@ function! Build()
 		else
 			:call ToggleSplits()
 			:call Build()
-		endif
-	endif
+        endif
+    endif
 endfunction
+
+
+command! -bar -nargs=1 SearchFiles
+            \ call SearchFiles(<q-args>)
+
+function! SearchFiles(string)
+    let cmd = 'findstr -s -n -i -l test *.c'
+    "let cmd = cmd . a:string . ' *.c'
+    let cmd_output = system(cmd)
+    if tabpagewinnr(tabpagenr(), '$') == 1
+        :call system('del w:\vim.search')
+        :vsplit w:\vim.search|put=cmd_output|redraw
+        :w
+    elseif tabpagewinnr(tabpagenr(), '$') == 2
+        if winnr() == winnr('$')
+            :call ToggleSplits()
+            :call SearchFiles()
+            :call SwapSplits()
+        else
+            :call ToggleSplits()
+			:call SearchFiles()
+        endif
+    endif
+endfunction
+
 endif
+
 
 " mister ctrl-i for å hoppe i jumplist når jeg remapper <tab>
 "går ikke å bare remappe til ctrl-i på nytt, så må ta noe annet
@@ -346,19 +385,6 @@ nnoremap <C-K> {
 set wildcharm=<C-z>
 nnoremap <C-Tab> :b <C-z>
 nnoremap <C-S-Tab> :b <C-z>
-
-"noe med det verste jeg har vært med på:
-"function! Awful(string)
-"	return fnamemodify(a:string.name,":t")
-"endfunction
-"function! NextBuf()
-"	setlocal statusline=
-"	for buf in getbufinfo({'buflisted':1})
-"		echo fnamemodify(buf.name,":t")
-"		"let @f = fnamemodify(buf.name,":t")
-"		setlocal statusline+=%{Awful(buf)}\ 	
-"	endfor
-"endfunction
 
 
 " fjerne hjelpmenyen fra K
