@@ -292,20 +292,43 @@ set wildmenu
 "vnoremap <space> zf
 set splitright
 
-autocmd BufRead,BufNewFile *.log :call ReadLogFile()
-function! ReadLogFile()
-	nnoremap <buffer> <CR> :call GotoError()<CR>
+autocmd BufRead,BufNewFile *.log :call ReadLogFileC()
+function! ReadLogFileC()
+	nnoremap <buffer> <CR> :call GotoErrorC()<CR>
 	highlight ErrorFiles gui=bold,undercurl
 	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(\d*)/
 endfunction
 
-function! GotoError()
+function! GotoErrorC()
 	try
 		" filnavn til feil i f-register
 		:redir @f> |.g/^.:\(\\.*\\\).*\..*\ze(\d*)/echon matchstr(getline('.'),@/)|redir END | redraw
 
 		"linjenr til feil i l-register
 		:redir @l> |.g/^.:\(\\.*\\\).*\..*(\zs\d.*\ze):/echon matchstr(getline('.'),@/)|redir END
+		:call clearmatches()
+		:winc p
+		:w
+		:execute 'edit' @f
+		:execute @l
+	catch /E492:/
+	endtry
+endfunction
+
+autocmd BufRead,BufNewFile *.search :call ReadLogFileSearch()
+function! ReadLogFileSearch()
+	nnoremap <buffer> <CR> :call GotoErrorSearch()<CR>
+	highlight ErrorFiles gui=bold
+	:match ErrorFiles /^.*\..*:\d*\ze:/
+endfunction
+
+function! GotoErrorSearch()
+	try
+		" filnavn til feil i f-register
+		:redir @f> |.g/^.*\..*\ze:\d*:/echon matchstr(getline('.'),@/)|redir END | redraw
+
+		"linjenr til feil i l-register
+		:redir @l> |.g/^.*\..*:\zs\d*\ze:/echon matchstr(getline('.'),@/)|redir END
 		:call clearmatches()
 		:winc p
 		:w
@@ -346,7 +369,7 @@ command! -bar -nargs=1 SearchFiles
 function! SearchFiles(string)
     if tabpagewinnr(tabpagenr(), '$') == 1
         :call system('del w:\vim.search')
-        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *h *c *hpp *cpp')|redraw
+        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *.h *.c *.hpp *.cpp')|redraw 
         :w
     elseif tabpagewinnr(tabpagenr(), '$') == 2
         if winnr() == winnr('$')
