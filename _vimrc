@@ -243,8 +243,26 @@ endfunction
 
 nnoremap H :call MoveLeft()<CR>
 nnoremap L $
-nnoremap <C-h> b
-nnoremap <C-l> w
+
+function! GoLeft()
+    :exe "normal h"
+    let cur_pos = getpos(".")
+    :exe "normal T_"
+    if cur_pos == getpos(".") 
+        :exe "normal b"
+    endif
+endfunction
+
+function! GoRight()
+    let cur_pos = getpos(".")
+    :exe "normal f_l" 
+    if cur_pos == getpos(".") 
+        :exe "normal w"
+    endif
+endfunction
+
+nnoremap <C-h> :call GoLeft()<CR>
+nnoremap <C-l> :call GoRight()<CR>
 "nnoremap <C-[> <C-o> "dette remapper esc... sykt irriterende
 
 function! BetterInsert()
