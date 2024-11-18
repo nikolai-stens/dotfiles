@@ -21,7 +21,14 @@ set belloff=all
 
 
 set cindent
-set cino==0,(0 "brace liner opp med case, newline liner opp med åpen parantes
+set cino==0,+2s,(0
+"set cino=+2s
+"brace liner opp med case, 
+"
+"newline liner opp med åpen parantes
+set expandtab
+set shiftwidth=4
+set tabstop=4
 
 
 if has('gui')                " gVim specific stuff
@@ -188,13 +195,17 @@ function! ToggleHFile()
         let l:file = matchstr(l:filename, '\zs.*\.\zecpp') 
         let l:hfile = l:file . 'h'
         :w
-        :execute(':edit '. expand(l:hfile))
+        if(filereadable(l:hfile))
+            :execute(':edit '. expand(l:hfile))
+        endif
     endif
     if match(l:filename, '.*\.h') + 1
         let l:file = matchstr(l:filename, '\zs.*\.\zeh') 
         let l:cppfile = l:file . 'cpp'
         :w
-        :execute(':edit '. expand(l:cppfile))
+        if(filereadable(l:cppfile))
+            :execute(':edit '. expand(l:cppfile))
+        endif
     endif
 endfunction
 
@@ -284,10 +295,6 @@ nnoremap zx 0wzs
 
 nnoremap <C-f> :find ./**/*
 
-
-set expandtab
-set shiftwidth=4
-set tabstop=4
 
 " open buffers vertically 
 cabbrev vb vert sb
@@ -497,7 +504,6 @@ nnoremap <leader>h <cmd>set hlsearch!<cr>
 "Plug 'tpope/vim-surround'
 "Plug 'yssl/QFEnter'
 "call plug#end()
-
 
 function! PasteMenu()
     let reg_list = ['" '.@", "1 ".@1, "2 ".@2, "3 ".@3, "4 ".@4, "5 ".@5, "6 ".@6, "7 ".@7, "8 ".@8, "9 ".@9,
