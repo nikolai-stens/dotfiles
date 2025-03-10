@@ -1,11 +1,3 @@
-set nocompatible 
-"set number
-"set relativenumber
-set encoding=utf-8
-set autoindent 
-set termguicolors
-set nowrap
-set belloff=all
 
 
 " TODO:
@@ -19,27 +11,60 @@ set belloff=all
 "
 
 
+" ==============================
+" general
+" ==============================
 
-set cindent
-set cino==0,+2s,(0
-"set cino=+2s
-"brace liner opp med case, 
-"
-"newline liner opp med åpen parantes
+set nocompatible 
+"set number
+"set relativenumber
+set encoding=utf-8
+set autoindent 
+set termguicolors
+set nowrap
+set belloff=all
 set expandtab
 set shiftwidth=4
 set tabstop=4
+set cursorline
+set noswapfile
+set path +=**
+set wildmenu 
+set splitright
+
+set hlsearch
+let @/ = "" " fjerner forrige søk når jeg resourcer vimrc
+set incsearch
+
+"set hidden ødelegger build.bat filen, orker ikke deale med det
+" får heller bare være litt jævlig med netrw
+set nohidden
+let g:netrw_banner = 0
+let g:netrw_browse_split = 0
+let g:netrw_use_errorwindow = 0
+
+filetype plugin indent on
+syntax on
+
+" fjerner autokommentering når man går til neste linje
+autocmd FileType * set formatoptions-=cro
 
 
-if has('gui')                " gVim specific stuff
+"set wildcharm=<C-z>
+  
+" ==============================
+" gui settings
+" ==============================
+
+if has('gui')                        " gVim specific stuff
 	set guifont=Liberation\ Mono:h12 " set font and font size
-	set guioptions-=T        " remove toolbar
-	set guioptions-=r        " remove right scrollbar
-	set guioptions-=L        " remove left scrollbar
-	set guioptions-=m        " remove menubar
-	set guioptions+=k        " hindre vinduet i å resize når man bruker vsplit
-	au GUIenter * simalt ~x  " åpne i maximized vindu
-	set backspace=indent,eol,start " fikse så backspace fungerer
+	set guioptions-=T                " remove toolbar
+	set guioptions-=r                " remove right scrollbar
+	set guioptions-=L                " remove left scrollbar
+	set guioptions-=m                " remove menubar
+	set guioptions+=k                " hindre vinduet i å resize når man bruker vsplit
+	au GUIenter * simalt ~x          " åpne i maximized vindu
+	set backspace=indent,eol,start   " fikse så backspace fungerer
 	if isdirectory('w:')
 	cd w:\skriv\code\
 else
@@ -48,18 +73,171 @@ else
     nnoremap ] :call CheckBrace()<CR>
     nnoremap u :call SwapSplits()<CR>
 endif
-	au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
-	wincmd h " bytt til venstre vindu etter å ha splittet vindu
+
+au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
+wincmd h " bytt til venstre vindu etter å ha splittet vindu
 endif
 
-filetype plugin indent on
-syntax on
+"CTERM colors
+let CtermColor1 = "DarkGreen"
+let CtermColor2 = "DarkBlue"
+let CtermColor3 = "DarkRed"
 
-" fjerner autokommentering når man går til neste linje
-autocmd FileType * set formatoptions-=cro
+let CtermTextColor = "DarkYellow"
+let CtermBackgroundColor1 = "Black"
+let CtermBackgroundColor2 = "DarkGray"
+let CtermBackgroundColor3 = "Gray"
 
-imap Îy <BS> 
-set cursorline
+let CtermCompColor = "DarkMagenta"
+
+"GUI colors
+
+let R = '6a'
+let G = 'b2'
+let B = '6a'
+
+exe "let xR = '0x".R."'"
+exe "let xG = '0x".G."'"
+exe "let xB = '0x".B."'"
+let xR = 0xff - xR
+let xG = 0xff - xG
+let xB = 0xff - xB
+
+exe "let ComplementaryColor = '#" . printf('%x',xR) . printf('%x',xG) .  printf('%x',xB) . "'"
+
+exe "let ColorTriad1 = '#" . R . G . B . "'"
+exe "let ColorTriad2 = '#" . B . R . G . "'"
+exe "let ColorTriad3 = '#" . G . B . R . "'"
+
+let TextColor          = '#ffe599'
+let BackgroundColor1   = '#222222'
+let BackgroundColor2   = '#333333'
+let BackgroundColor3   = '#555555'
+
+"Setting colors
+
+exe 'hi Normal        ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermTextColor .        ' guibg=' . BackgroundColor1 . ' guifg=' . TextColor
+exe 'hi VertSplit     ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
+exe 'hi Cursor        ctermbg=' . CtermColor1 .                                                 ' guibg=' . ColorTriad1
+exe 'hi lCursor                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermBackgroundColor1   ' guibg=' . BackgroundColor1 .                                ' cterm = none' 
+exe 'hi MatchParen    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermColor3 .           ' guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
+exe 'hi StatusLine    ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor3 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
+exe 'hi StatusLineNC  ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor2 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
+exe 'hi Comment                                             ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
+exe 'hi EndOfBuffer                                         ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
+
+exe 'hi Constant                                            ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
+exe 'hi Identifier                                          ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
+exe 'hi Statement                                           ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi PreProc                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
+exe 'hi Type                                                ctermfg=' . CtermColor1 .                                          ' guifg=' . ColorTriad1
+
+exe 'hi PMenu         ctermbg=' . CtermBackgroundColor2 . ' ctermfg=' . CtermColor1 .          ' guibg=' . BackgroundColor2 . ' guifg=' . ColorTriad1
+exe 'hi PMenuSel      ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermColor3 .          ' guibg=' . BackgroundColor3 . ' guifg=' . ColorTriad3
+
+
+" note/todo coloring
+autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
+autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
+autocmd Syntax cpp syntax keyword ImportantMarker IMPORTANT containedin=.*Comment,vimCommentTitle,cCommentL
+
+autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
+autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
+autocmd Syntax cpp hi ImportantMarker gui=bold guifg=Yellow
+
+
+" ======================================
+" window splitting and navigation
+" ======================================
+
+"window navigation
+nnoremap <Tab> <C-w><C-w>
+nnoremap <S-Tab> <C-w>W
+
+"text navigation
+nnoremap <C-J> }
+nnoremap <C-K> {
+
+nnoremap H :call MoveLeft()<CR>
+nnoremap L $
+nnoremap <C-h> :call GoLeft()<CR>
+nnoremap <C-l> :call GoRight()<CR>
+"nnoremap <C-[> <C-o> "dette remapper esc... sykt irriterende
+
+" mister ctrl-i for å hoppe i jumplist når jeg remapper <tab>
+"går ikke å bare remappe til ctrl-i på nytt, så må ta noe annet
+nnoremap <C-p> <C-i> 
+
+"sentrer skjermen på teksten horisontalt
+nnoremap zx 0wzs
+
+nnoremap <C-f> :find ./**/*
+
+" open buffers vertically 
+cabbrev vb vert sb
+
+"move between windows
+nnoremap <A-]> :call CheckBrace()<CR>
+nnoremap <A-Space> :call ToggleSplits()<CR>
+nnoremap <A-m> :call NewFileRight()<CR>
+nnoremap <A-n> :call NewFileLeft()<CR> 
+nnoremap <A-u> :call SwapSplits()<CR>
+nnoremap <C-q> :call ToggleHFile()<CR>
+
+"set ignorecase
+nnoremap <Space> /
+nnoremap <C-Space> ?
+
+" for marks
+nnoremap , `
+nnoremap d, d`
+nnoremap c, c`
+nnoremap y, y`
+nnoremap g, g`
+
+" buffer switching
+nnoremap <Leader>b :ls<CR>:b<Space>
+nnoremap <C-Tab> :b <C-z>
+nnoremap <C-S-Tab> :b <C-z>
+
+function! MoveLeft()
+	:exe "normal 0"
+	if getline(".")[col(".")-1] == " "
+		:exe "normal w"
+	endif
+endfunction
+
+function! GoLeft()
+    :exe "normal h"
+    let cur_pos = getpos(".")
+    :exe "normal T_"
+    if cur_pos == getpos(".") 
+        :exe "normal b"
+    endif
+endfunction
+
+function! GoRight()
+    let cur_pos = getpos(".")
+    :exe "normal f_l" 
+    if cur_pos == getpos(".") 
+        :exe "normal w"
+    endif
+endfunction
+
+" ======================================
+" text editing
+" ======================================
+
+nnoremap <A-p> vip
+
+" fjerne hjelpmenyen fra K
+nnoremap K kJ
+vnoremap K kJ
+
+"autocomplete med tab
+inoremap <Tab> <C-n>
+inoremap <S-Tab> <C-p>
 
 function! CheckBrace()
 	"veldig janky, men match() returnerer tydeligvis -1 hvis den
@@ -77,14 +255,139 @@ function! CheckBrace()
 	endif
 endfunction
 
-
-nnoremap <A-]> :call CheckBrace()<CR>
-
 function! CheckIndent()
 	const indent_no = indent(line("."))
 	echo indent_no
 endfunction
 
+function! BetterInsert()
+	if getline('.') =~ '^\s*$'
+		call feedkeys('cc')
+	else
+		:startinsert
+	endif
+endfunction
+
+nnoremap i :call BetterInsert()<CR>
+
+function! PasteMenu()
+    let reg_list = ['" '.@", "1 ".@1, "2 ".@2, "3 ".@3, "4 ".@4, "5 ".@5, "6 ".@6, "7 ".@7, "8 ".@8, "9 ".@9,
+                  \ "a ".@a, "b ".@b, "c ".@c, "d ".@d, "e ".@e, "f ".@f, "g ".@g, "h ".@h, "i ".@i, "j ".@j, "k ".@k,
+                  \ "l ".@l, "m ".@m, "n ".@n, "o ".@o, "p ".@p, "q ".@q, "r ".@r, "s ".@s, "t ".@t, "u ".@u, "v ".@v, 
+                  \ "w ".@w, "x ".@x, "y ".@y, "z ".@z, "- ".@-, ". ".@., ". ".@:, "% ".@%, "= ".@=, "+ ".@+]
+    call popup_menu(reg_list, #{
+                \ wrap: 0,
+                \ maxwidth: 100,
+                \ filter: 'PasteMenuFilter',
+                \ callback: 'PasteMenuHandler',
+                \ })
+endfunction
+
+function! PasteMenuFilter(id, key)
+    return popup_filter_menu(a:id, a:key)
+endfunc
+
+function! PasteMenuHandler(id, result)
+    let reg_list = [@", @1, @2, @3, @4, @5, @6, @7, @8, @9,
+                \ @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k,
+                \ @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, 
+                \ @w, @x, @y, @z, @-, @., @:, @%, @=, @+]
+    if a:result > 0
+    :exe 'normal i'.reg_list[a:result - 1]
+    endif
+endfunc
+
+nnoremap <C-p> :call PasteMenu()<CR>
+
+" ======================================
+" indentation & C/C++ formatting
+" ======================================
+
+set cino==0,+2s,(0,N-s
+set cindent
+"brace liner opp med case, 
+"newline liner opp med åpen parantes
+
+function! ToggleHFile()
+    let l:filename = @%
+    if match(l:filename, '.*\.cpp') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zecpp') 
+        let l:hfile = l:file . 'h'
+        :w
+        if(filereadable(l:hfile))
+            :execute(':edit '. expand(l:hfile))
+        endif
+    endif
+    if match(l:filename, '.*\.h') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zeh') 
+        let l:cppfile = l:file . 'cpp'
+        :w
+        if(filereadable(l:cppfile))
+            :execute(':edit '. expand(l:cppfile))
+        endif
+    endif
+endfunction
+
+
+" ======================================
+" search highlighting toggle
+" ======================================
+augroup AutoHighlighting
+    au!
+    autocmd CmdlineEnter /,\? set hlsearch
+    autocmd CmdlineLeave /,\? set nohlsearch
+augroup END
+nnoremap <leader>h <cmd>set hlsearch!<cr>
+
+
+" ======================================
+" mappings for copy/paste
+" ======================================
+
+nnoremap <A-c> "+y
+nnoremap <A-v> "+p
+vnoremap <A-c> "+y
+vnoremap <A-v> "+p
+
+
+" ======================================
+" moving lines
+" ======================================
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+" ======================================
+" file search
+" ======================================
+
+command! -bar -nargs=1 SearchFiles
+            \ call SearchFiles(<q-args>)
+
+function! SearchFiles(string)
+    if tabpagewinnr(tabpagenr(), '$') == 1
+        :call system('del w:\vim.search')
+        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *.h *.c *.hpp *.cpp')|redraw 
+        :w
+    elseif tabpagewinnr(tabpagenr(), '$') == 2
+        if winnr() == winnr('$')
+            :call ToggleSplits()
+            :call SearchFiles(a:string)
+            :call SwapSplits()
+        else
+            :call ToggleSplits()
+			:call SearchFiles(a:string)
+        endif
+    endif
+endfunction
+
+" ======================================
+" functions for window & file management
+" ======================================
 
 function! SwapSplits()
 	" legge til så denne ikke kjører når det ikke er kun 2 splits
@@ -113,6 +416,9 @@ function! NewFileLeft()
 		:exe "normal \<C-w>\<C-h>"
 		try
             ":NetrwC
+            if winnr('$') > 1
+                wincmd p
+            endif
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
@@ -137,6 +443,9 @@ function! NewFileRight()
 		:exe "normal \<C-w>\<C-l>" 
 		try
             ":NetrwC
+            if winnr('$') > 1
+                wincmd p
+            endif
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
@@ -189,41 +498,10 @@ function! Confirm()
 	endif
 endfunction
 
-function! ToggleHFile()
-    let l:filename = @%
-    if match(l:filename, '.*\.cpp') + 1
-        let l:file = matchstr(l:filename, '\zs.*\.\zecpp') 
-        let l:hfile = l:file . 'h'
-        :w
-        if(filereadable(l:hfile))
-            :execute(':edit '. expand(l:hfile))
-        endif
-    endif
-    if match(l:filename, '.*\.h') + 1
-        let l:file = matchstr(l:filename, '\zs.*\.\zeh') 
-        let l:cppfile = l:file . 'cpp'
-        :w
-        if(filereadable(l:cppfile))
-            :execute(':edit '. expand(l:cppfile))
-        endif
-    endif
-endfunction
 
-" prøver å gjøre det smudere å åpne filer
-nnoremap <A-Space> :call ToggleSplits()<CR>
-nnoremap <A-m> :call NewFileRight()<CR>
-nnoremap <A-n> :call NewFileLeft()<CR> 
-nnoremap <A-u> :call SwapSplits()<CR>
-nnoremap <C-q> :call ToggleHFile()<CR>
-
-"NETRW greier
-
-"set hidden ødelegger build.bat filen, orker ikke deale med det
-" får heller bare være litt jævlig med netrw
-set nohidden
-let g:netrw_banner = 0
-let g:netrw_browse_split = 0
-let g:netrw_use_errorwindow = 1
+" ======================================
+" netrw mappings
+" ======================================
 
 augroup netrw_mapping
     autocmd!
@@ -235,87 +513,69 @@ function! NetrwMapping()
     redraw
 endfunction
 
-nnoremap - :E<CR>
+nnoremap - :w<CR> :E<CR>
 
-"function! CallPopup()
-"    let winid = popup_create('hello', {})
-"    let bufnr = winbufnr(winid)
-"    call setbufline(bufnr, 2, 'second line')
-"endfunction
-"
-"nnoremap <C-1> :call CallPopup()<CR>
+" ======================================
+" plugin settings
+" ======================================
 
-function! MoveLeft()
-	:exe "normal 0"
-	if getline(".")[col(".")-1] == " "
-		:exe "normal w"
-	endif
-endfunction
+" plugins 
+"call plug#begin('~/.vim/plugged')
+"Plug 'lervag/vimtex'
+"let g:tex_flavor='latex'
+"let g:vimtex_view_method='zathura'
+"let g:vimtex_quickfix_mode=0
+"set conceallevel=1
+"let g:tex_conceal='abdmgs'
+"let g:vimtex_compiler_method = 'latexmk'
+"let g:vimtex_compiler_latexmk = {
+"    \ 'options' : [
+"    \   '-pdf',
+"    \   '-shell-escape',
+"    \   '-verbose',
+"    \   '-file-line-error',
+"    \   '-synctex=1',
+"    \   '-interaction=nonstopmode',
+"    \ ],
+"    \}
+"Plug 'morhetz/gruvbox'
+"Plug 'tpope/vim-surround'
+"Plug 'yssl/QFEnter'
+"call plug#end()
 
-nnoremap H :call MoveLeft()<CR>
-nnoremap L $
 
-function! GoLeft()
-    :exe "normal h"
-    let cur_pos = getpos(".")
-    :exe "normal T_"
-    if cur_pos == getpos(".") 
-        :exe "normal b"
+" ======================================
+" compilation & build 
+" ======================================
+
+if isdirectory('w:')
+
+function! Build()
+	if tabpagewinnr(tabpagenr(), '$') == 1
+        if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h' 
+            :call system('del w:\build\build.log')
+            :vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
+            :w
+        elseif &filetype ==# 'tex' 
+            :call system('del w:\kompendium\build.log')
+            :vsplit w:\kompendium\build.log|put=system('w:\kompendium\build.bat') | redraw
+            :w
+        endif
+	elseif tabpagewinnr(tabpagenr(), '$') == 2
+		if winnr() == winnr('$')
+			:call ToggleSplits()
+			:call Build()
+			:call SwapSplits()
+		else
+			:call ToggleSplits()
+			:call Build()
+        endif
     endif
 endfunction
 
-function! GoRight()
-    let cur_pos = getpos(".")
-    :exe "normal f_l" 
-    if cur_pos == getpos(".") 
-        :exe "normal w"
-    endif
-endfunction
+endif
 
-nnoremap <C-h> :call GoLeft()<CR>
-nnoremap <C-l> :call GoRight()<CR>
-"nnoremap <C-[> <C-o> "dette remapper esc... sykt irriterende
-
-function! BetterInsert()
-	if getline('.') =~ '^\s*$'
-		call feedkeys('cc')
-	else
-		:startinsert
-	endif
-endfunction
-
-nnoremap i :call BetterInsert()<CR>
-
-"autocomplete med tab
-inoremap <Tab> <C-n>
-inoremap <S-Tab> <C-p>
-
-"sentrer skjermen på teksten horisontalt
-nnoremap zx 0wzs
-
-nnoremap <C-f> :find ./**/*
-
-
-" open buffers vertically 
-cabbrev vb vert sb
-
-set hlsearch
-let @/ = "" " fjerner forrige søk når jeg resourcer vimrc
-set incsearch
-
-set noswapfile
-
-" search in subfolders and tabcomplete
-set path +=**
-
-" show matching files with tabcomplete
-set wildmenu 
-
-" fold settings
-"set foldmethod=indent
-"nnoremap <space> za
-"vnoremap <space> zf
-set splitright
+nnoremap <C-t> :call Build()<CR>
 
 autocmd BufRead,BufNewFile *.log :call ReadLogFileC()
 function! ReadLogFileC()
@@ -363,80 +623,12 @@ function! GotoErrorSearch()
 	endtry
 endfunction
 
-if isdirectory('w:')
-function! Build()
-	if tabpagewinnr(tabpagenr(), '$') == 1
-        if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h' 
-            :call system('del w:\build\build.log')
-            :vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
-            :w
-        elseif &filetype ==# 'tex' 
-            :call system('del w:\kompendium\build.log')
-            :vsplit w:\kompendium\build.log|put=system('w:\kompendium\build.bat') | redraw
-            :w
-        endif
-	elseif tabpagewinnr(tabpagenr(), '$') == 2
-		if winnr() == winnr('$')
-			:call ToggleSplits()
-			:call Build()
-			:call SwapSplits()
-		else
-			:call ToggleSplits()
-			:call Build()
-        endif
-    endif
-endfunction
+" ======================================
+" misc fixes & typos
+" ======================================
 
+imap Îy <BS> 
 
-command! -bar -nargs=1 SearchFiles
-            \ call SearchFiles(<q-args>)
-
-function! SearchFiles(string)
-    if tabpagewinnr(tabpagenr(), '$') == 1
-        :call system('del w:\vim.search')
-        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *.h *.c *.hpp *.cpp')|redraw 
-        :w
-    elseif tabpagewinnr(tabpagenr(), '$') == 2
-        if winnr() == winnr('$')
-            :call ToggleSplits()
-            :call SearchFiles(a:string)
-            :call SwapSplits()
-        else
-            :call ToggleSplits()
-			:call SearchFiles(a:string)
-        endif
-    endif
-endfunction
-
-endif
-
-
-" mister ctrl-i for å hoppe i jumplist når jeg remapper <tab>
-"går ikke å bare remappe til ctrl-i på nytt, så må ta noe annet
-nnoremap <C-p> <C-i> 
-
-"enklere navigering mellom vinduer
-nnoremap <Tab> <C-w><C-w>
-nnoremap <S-Tab> <C-w>W
-
-
-" nnoremap <C-t> :!python %<CR>
-nnoremap <C-t> :call Build()<CR>
-"nnoremap % :source %<CR>
-nnoremap <Leader>b :ls<CR>:b<Space>
-nnoremap <C-J> }
-nnoremap <C-K> {
-
-set wildcharm=<C-z>
-nnoremap <C-Tab> :b <C-z>
-nnoremap <C-S-Tab> :b <C-z>
-
-
-" fjerne hjelpmenyen fra K
-nnoremap K kJ
-vnoremap K kJ
-
-" typos
 :command! WQ wq
 :command! Wq wq
 :command! W w
@@ -444,166 +636,25 @@ vnoremap K kJ
 :command! WQA wqa
 :command! WQa wqa
 :command! Wqa wqa
-"
-" lettere å copypaste vanlig register
-nnoremap <A-c> "+y
-nnoremap <A-v> "+p
-vnoremap <A-c> "+y
-vnoremap <A-v> "+p
-
-" flytte linjer opp eller ned
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
-nnoremap <A-p> vip
 
 
-"set ignorecase
-nnoremap <Space> /
-nnoremap <C-Space> ?
-
-" for marks
-nnoremap , `
-nnoremap d, d`
-nnoremap c, c`
-nnoremap y, y`
-nnoremap g, g`
-
-"fjern highlighting etter søk
-augroup AutoHighlighting
-    au!
-    autocmd CmdlineEnter /,\? set hlsearch
-    autocmd CmdlineLeave /,\? set nohlsearch
-augroup END
-nnoremap <leader>h <cmd>set hlsearch!<cr>
-
-" plugins 
-"call plug#begin('~/.vim/plugged')
-"Plug 'lervag/vimtex'
-"let g:tex_flavor='latex'
-"let g:vimtex_view_method='zathura'
-"let g:vimtex_quickfix_mode=0
-"set conceallevel=1
-"let g:tex_conceal='abdmgs'
-"let g:vimtex_compiler_method = 'latexmk'
-"let g:vimtex_compiler_latexmk = {
-"    \ 'options' : [
-"    \   '-pdf',
-"    \   '-shell-escape',
-"    \   '-verbose',
-"    \   '-file-line-error',
-"    \   '-synctex=1',
-"    \   '-interaction=nonstopmode',
-"    \ ],
-"    \}
-"Plug 'morhetz/gruvbox'
-"Plug 'tpope/vim-surround'
-"Plug 'yssl/QFEnter'
-"call plug#end()
-
-function! PasteMenu()
-    let reg_list = ['" '.@", "1 ".@1, "2 ".@2, "3 ".@3, "4 ".@4, "5 ".@5, "6 ".@6, "7 ".@7, "8 ".@8, "9 ".@9,
-                  \ "a ".@a, "b ".@b, "c ".@c, "d ".@d, "e ".@e, "f ".@f, "g ".@g, "h ".@h, "i ".@i, "j ".@j, "k ".@k,
-                  \ "l ".@l, "m ".@m, "n ".@n, "o ".@o, "p ".@p, "q ".@q, "r ".@r, "s ".@s, "t ".@t, "u ".@u, "v ".@v, 
-                  \ "w ".@w, "x ".@x, "y ".@y, "z ".@z, "- ".@-, ". ".@., ". ".@:, "% ".@%, "= ".@=, "+ ".@+]
-    call popup_menu(reg_list, #{
-                \ wrap: 0,
-                \ maxwidth: 100,
-                \ filter: 'PasteMenuFilter',
-                \ callback: 'PasteMenuHandler',
-                \ })
-endfunction
-
-function! PasteMenuFilter(id, key)
-    return popup_filter_menu(a:id, a:key)
-endfunc
-
-function! PasteMenuHandler(id, result)
-    let reg_list = [@", @1, @2, @3, @4, @5, @6, @7, @8, @9,
-                \ @a, @b, @c, @d, @e, @f, @g, @h, @i, @j, @k,
-                \ @l, @m, @n, @o, @p, @q, @r, @s, @t, @u, @v, 
-                \ @w, @x, @y, @z, @-, @., @:, @%, @=, @+]
-    if a:result > 0
-    :exe 'normal i'.reg_list[a:result - 1]
-    endif
-endfunc
-
-nnoremap <C-p> :call PasteMenu()<CR>
-
-"CTERM colors
 
 
-let CtermColor1 = "DarkGreen"
-let CtermColor2 = "DarkBlue"
-let CtermColor3 = "DarkRed"
-
-let CtermTextColor = "DarkYellow"
-let CtermBackgroundColor1 = "Black"
-let CtermBackgroundColor2 = "DarkGray"
-let CtermBackgroundColor3 = "Gray"
-
-let CtermCompColor = "DarkMagenta"
 
 
-"GUI colors
 
-let R = '6a'
-let G = 'b2'
-let B = '6a'
 
-exe "let xR = '0x".R."'"
-exe "let xG = '0x".G."'"
-exe "let xB = '0x".B."'"
-let xR = 0xff - xR
-let xG = 0xff - xG
-let xB = 0xff - xB
 
-exe "let ComplementaryColor = '#" . printf('%x',xR) . printf('%x',xG) .  printf('%x',xB) . "'"
 
-exe "let ColorTriad1 = '#" . R . G . B . "'"
-exe "let ColorTriad2 = '#" . B . R . G . "'"
-exe "let ColorTriad3 = '#" . G . B . R . "'"
 
-let TextColor          = '#ffe599'
-let BackgroundColor1   = '#222222'
-let BackgroundColor2   = '#333333'
-let BackgroundColor3   = '#555555'
 
-"Setting colors
 
-exe 'hi Normal        ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermTextColor .        ' guibg=' . BackgroundColor1 . ' guifg=' . TextColor
-exe 'hi VertSplit     ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
-exe 'hi Cursor        ctermbg=' . CtermColor1 .                                                 ' guibg=' . ColorTriad1
-exe 'hi lCursor                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
-exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermBackgroundColor1   ' guibg=' . BackgroundColor1 .                                ' cterm = none' 
-exe 'hi MatchParen    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermColor3 .           ' guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
-exe 'hi StatusLine    ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor3 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
-exe 'hi StatusLineNC  ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor2 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
-exe 'hi Comment                                             ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
-exe 'hi EndOfBuffer                                         ctermfg=' . CtermCompColor .                                       ' guifg=' . ComplementaryColor
 
-exe 'hi Constant                                            ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
-exe 'hi Identifier                                          ctermfg=' . CtermColor2 .                                          ' guifg=' . ColorTriad2
-exe 'hi Statement                                           ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
-exe 'hi PreProc                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
-exe 'hi Type                                                ctermfg=' . CtermColor1 .                                          ' guifg=' . ColorTriad1
 
-exe 'hi PMenu         ctermbg=' . CtermBackgroundColor2 . ' ctermfg=' . CtermColor1 .          ' guibg=' . BackgroundColor2 . ' guifg=' . ColorTriad1
-exe 'hi PMenuSel      ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermColor3 .          ' guibg=' . BackgroundColor3 . ' guifg=' . ColorTriad3
 
-"hi Todo         guibg=#222222 guifg=#6ab26a gui=bold
-"hi Error        guibg=#222222 guifg=#b26a6a gui=bold
 
-autocmd Syntax cpp syntax keyword NoteMarker NOTE containedin=.*Comment,vimCommentTitle,cCommentL
-autocmd Syntax cpp syntax keyword TodoMarker TODO containedin=.*Comment,vimCommentTitle,cCommentL
-autocmd Syntax cpp syntax keyword ImportantMarker IMPORTANT containedin=.*Comment,vimCommentTitle,cCommentL
 
-autocmd Syntax cpp hi NoteMarker gui=bold guifg=DarkGreen
-autocmd Syntax cpp hi TodoMarker gui=bold guifg=DarkRed
-autocmd Syntax cpp hi ImportantMarker gui=bold guifg=Yellow
+
+
 
 
