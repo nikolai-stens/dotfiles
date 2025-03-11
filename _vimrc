@@ -19,7 +19,7 @@ set nocompatible
 "set number
 "set relativenumber
 set encoding=utf-8
-set autoindent 
+set autoindent
 set termguicolors
 set nowrap
 set belloff=all
@@ -31,6 +31,7 @@ set noswapfile
 set path +=**
 set wildmenu 
 set splitright
+
 
 set hlsearch
 let @/ = "" " fjerner forrige søk når jeg resourcer vimrc
@@ -198,6 +199,7 @@ nnoremap g, g`
 
 " buffer switching
 nnoremap <Leader>b :ls<CR>:b<Space>
+set wildcharm=<C-z>
 nnoremap <C-Tab> :b <C-z>
 nnoremap <C-S-Tab> :b <C-z>
 
@@ -256,8 +258,8 @@ function! CheckBrace()
 endfunction
 
 function! CheckIndent()
-	const indent_no = indent(line("."))
-	echo indent_no
+    const indent_no = indent(line("."))
+    echo indent_no
 endfunction
 
 function! BetterInsert()
@@ -300,11 +302,12 @@ endfunc
 nnoremap <C-p> :call PasteMenu()<CR>
 
 " ======================================
-" indentation & C/C++ formatting
+" indentation
 " ======================================
 
-set cino==0,+2s,(0,N-s
+set cino==0,+2s,(0,t0,N-s
 set cindent
+
 "brace liner opp med case, 
 "newline liner opp med åpen parantes
 
