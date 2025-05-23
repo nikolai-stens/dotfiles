@@ -32,6 +32,11 @@ set path +=**
 set wildmenu 
 set splitright
 
+set langmenu=en_US
+let $LANG = 'en_US'
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
 
 set hlsearch
 let @/ = "" " fjerner forrige søk når jeg resourcer vimrc
@@ -75,9 +80,20 @@ else
     nnoremap u :call SwapSplits()<CR>
 endif
 
-au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
-wincmd h " bytt til venstre vindu etter å ha splittet vindu
-endif
+"au VimEnter * if argc() == 0 | topleft vsplit | e . " split screen på startup (hvis man ikke åpner en spesifikk fil)
+"wincmd h " bytt til venstre vindu etter å ha splittet vindu
+"endif
+
+function! OpenExplorerOnStartup()
+  if argc() == 0
+    call timer_start(100, {-> execute('topleft vsplit | Explore | wincmd h')})
+  endif
+endfunction
+
+augroup StartupSplit
+  autocmd!
+  autocmd VimEnter * call OpenExplorerOnStartup()
+augroup END
 
 "CTERM colors
 let CtermColor1 = "DarkGreen"
@@ -412,6 +428,10 @@ function! SwapSplits()
 endfunction
 
 function! NewFileLeft()
+    if bufname('%') == '' && !&modified
+        enew
+    endif
+
 	" må legge til catch til E37
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:topleft vsplit .
@@ -639,25 +659,3 @@ imap Îy <BS>
 :command! WQA wqa
 :command! WQa wqa
 :command! Wqa wqa
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
