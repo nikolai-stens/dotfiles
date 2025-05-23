@@ -231,6 +231,9 @@ endfunction
 " text editing
 " ======================================
 
+nnoremap > >>
+nnoremap < <<
+
 nnoremap <A-p> vip
 
 " fjerne hjelpmenyen fra K
@@ -584,7 +587,7 @@ autocmd BufRead,BufNewFile *.log :call ReadLogFileC()
 function! ReadLogFileC()
 	nnoremap <buffer> <CR> :call GotoErrorC()<CR>
 	highlight ErrorFiles gui=bold,undercurl
-	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(\d*)/
+	:match ErrorFiles /^.:\(\\.*\\\)\zs.*\..*\ze(\d*) /
 endfunction
 
 function! GotoErrorC()
@@ -607,7 +610,7 @@ autocmd BufRead,BufNewFile *.search :call ReadLogFileSearch()
 function! ReadLogFileSearch()
 	nnoremap <buffer> <CR> :call GotoErrorSearch()<CR>
 	highlight ErrorFiles gui=bold
-	:match ErrorFiles /^.*\..*:\d*\ze:/
+	:match ErrorFiles /^.*\..*:\d*\ze: /
 endfunction
 
 function! GotoErrorSearch()
