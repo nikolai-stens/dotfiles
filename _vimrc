@@ -32,10 +32,10 @@ set path +=**
 set wildmenu 
 set splitright
 
-set langmenu=en_US
-let $LANG = 'en_US'
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
+"set langmenu=en_US
+"let $LANG = 'en_US'
+"source $VIMRUNTIME/delmenu.vim
+"source $VIMRUNTIME/menu.vim
 
 
 set hlsearch
@@ -71,7 +71,6 @@ if has('gui')                        " gVim specific stuff
 	set guioptions+=k                " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x          " åpne i maximized vindu
 	set backspace=indent,eol,start   " fikse så backspace fungerer
-	if isdirectory('w:')
 	cd w:\skriv\code\
 else
     nnoremap m :call NewFileRight()<CR>
@@ -580,7 +579,7 @@ function! Build()
 	if tabpagewinnr(tabpagenr(), '$') == 1
         if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h' 
             :call system('del w:\build\build.log')
-            :vsplit w:\build\build.log|put=system('w:\handmade\misc\shell.bat & build.bat') | redraw
+            :vsplit w:\build\build.log|put=system('w:\dotfiles\shell.bat & build.bat') | redraw
             :w
         elseif &filetype ==# 'tex' 
             :call system('del w:\kompendium\build.log')

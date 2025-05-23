@@ -1,9 +1,19 @@
 @echo off
 
-REM TODO - can we just build both with one exe? 
+REM Legg til i "target" i properies til cmd (win10) eller i Settings->command line->command line (win11)
+REM %windir%\system32\cmd.exe /k w:\dotfiles\shell.bat
 
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 > nul
-set path=w:\handmade\misc;%path%
+REM å kjøre vcvarsall/vcvars64 tar sykt lang tid, bedre å bare lagre env som man faktisk trenger, og så kun laste inn det
+if not exist W:\cl_env.txt (
+    REM call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 > nul
+    call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" > nul
+    set > W:\cl_env.txt
+)
+
+for /f "tokens=1,* delims==" %%A in (W:\cl_env.txt) do (
+    set "%%A=%%B")
+
+set path=w:\dotfiles;%path%
 
 REM glew stuff
 set INCLUDE=C:\vcpkg\installed\x64-windows\include;%INCLUDE%
