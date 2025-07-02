@@ -71,7 +71,7 @@ if has('gui')                        " gVim specific stuff
 	set guioptions+=k                " hindre vinduet i å resize når man bruker vsplit
 	au GUIenter * simalt ~x          " åpne i maximized vindu
 	set backspace=indent,eol,start   " fikse så backspace fungerer
-	cd w:\skriv\code\
+	cd w:\
 else
     nnoremap m :call NewFileRight()<CR>
     nnoremap n :call NewFileLeft()<CR>
@@ -661,3 +661,9 @@ imap Îy <BS>
 :command! WQA wqa
 :command! WQa wqa
 :command! Wqa wqa
+
+augroup glsl
+    autocmd!
+    autocmd BufNewFile,BufRead *.glsl,*.vert,*.frag,*.geom setfiletype glsl
+augroup END
+autocmd FileType glsl setlocal syntax=cpp
