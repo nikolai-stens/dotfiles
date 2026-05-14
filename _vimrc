@@ -53,7 +53,7 @@ filetype plugin indent on
 syntax on
 
 " fjerner autokommentering når man går til neste linje
-autocmd FileType * set formatoptions-=cro
+autocmd FileType * setlocal formatoptions-=cro
 
 
 "set wildcharm=<C-z>
@@ -136,7 +136,7 @@ exe 'hi Normal        ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermTex
 exe 'hi VertSplit     ctermbg=' . CtermBackgroundColor3 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor3 . ' guifg=' . BackgroundColor1
 exe 'hi Cursor        ctermbg=' . CtermColor1 .                                                 ' guibg=' . ColorTriad1
 exe 'hi lCursor                                             ctermfg=' . CtermColor3 .                                          ' guifg=' . ColorTriad3
-exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermBackgroundColor1   ' guibg=' . BackgroundColor1 .                                ' cterm = none' 
+exe 'hi CursorLine    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermBackgroundColor1 . ' guibg=' . BackgroundColor1 .                                ' cterm=NONE'
 exe 'hi MatchParen    ctermbg=' . CtermBackgroundColor1 . ' ctermfg=' . CtermColor3 .           ' guibg=' . BackgroundColor1 . ' guifg=' . ColorTriad3
 exe 'hi StatusLine    ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor3 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor3
 exe 'hi StatusLineNC  ctermbg=' . CtermColor1           . ' ctermfg=' . CtermBackgroundColor2 . ' guibg=' . ColorTriad1      . ' guifg=' . BackgroundColor2
@@ -317,7 +317,7 @@ function! PasteMenuHandler(id, result)
     endif
 endfunc
 
-nnoremap <C-p> :call PasteMenu()<CR>
+nnoremap <Leader>p :call PasteMenu()<CR>
 
 " ======================================
 " indentation
@@ -331,16 +331,15 @@ set cindent
 
 function! ToggleHFile()
     let l:filename = @%
-    if match(l:filename, '.*\.cpp') + 1
-        let l:file = matchstr(l:filename, '\zs.*\.\zecpp') 
+    if match(l:filename, '\.cpp$') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zecpp$')
         let l:hfile = l:file . 'h'
         :w
         if(filereadable(l:hfile))
             :execute(':edit '. expand(l:hfile))
         endif
-    endif
-    if match(l:filename, '.*\.h') + 1
-        let l:file = matchstr(l:filename, '\zs.*\.\zeh') 
+    elseif match(l:filename, '\.h$') + 1
+        let l:file = matchstr(l:filename, '\zs.*\.\zeh$')
         let l:cppfile = l:file . 'cpp'
         :w
         if(filereadable(l:cppfile))
@@ -359,6 +358,7 @@ augroup AutoHighlighting
     autocmd CmdlineLeave /,\? set nohlsearch
 augroup END
 nnoremap <leader>h <cmd>set hlsearch!<cr>
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 
 
 " ======================================
@@ -386,14 +386,35 @@ vnoremap <A-k> :m '<-2<CR>gv=gv
 " file search
 " ======================================
 
-command! -bar -nargs=1 SearchFiles
-            \ call SearchFiles(<q-args>)
+ command! -bar -nargs=1 SearchFiles
+             \ call SearchFiles(<q-args>)
 
+" :Grep <pattern> — findstr into quickfix, jump with :cnext / :cprev / <CR>
+command! -nargs=+ Grep
+            \ cexpr system('findstr -s -n -i '.<q-args>.' *.h *.c *.hpp *.cpp *.glsl *.vert *.frag') | copen
+ 
 function! SearchFiles(string)
     if tabpagewinnr(tabpagenr(), '$') == 1
-        :call system('del w:\vim.search')
-        :vsplit w:\vim.search|put=system('findstr -s -n -i -l '.a:string.' *.h *.c *.hpp *.cpp')|redraw 
-        :w
+        " kill any prior search so we don't have two jobs writing to dead buffers
+        if exists('s:search_job') && job_status(s:search_job) ==# 'run'
+            call job_stop(s:search_job)
+        endif
+        " wipe leftover [search] buffer so the :file rename doesn't hit E95
+        let l:old = bufnr('\[search\]')
+        if l:old > 0
+            execute 'silent! bwipeout!' l:old
+        endif
+        " scratch buffer — never touches disk
+        vnew
+        setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted
+        silent! file [search]
+        call ReadLogFileSearch()
+        " async: window appears immediately, hits stream in as findstr finds them
+        let l:cmd = 'cmd.exe /c findstr -s -n -i '.a:string.' *.h *.c *.hpp *.cpp *.glsl *.vert *.frag'
+        let s:search_job = job_start(l:cmd, {
+                    \ 'out_io': 'buffer', 'out_buf': bufnr('%'), 'out_msg': 0,
+                    \ 'err_io': 'buffer', 'err_buf': bufnr('%'), 'err_msg': 0,
+                    \ })
     elseif tabpagewinnr(tabpagenr(), '$') == 2
         if winnr() == winnr('$')
             :call ToggleSplits()
@@ -401,7 +422,7 @@ function! SearchFiles(string)
             :call SwapSplits()
         else
             :call ToggleSplits()
-			:call SearchFiles(a:string)
+            :call SearchFiles(a:string)
         endif
     endif
 endfunction
@@ -440,10 +461,6 @@ function! NewFileLeft()
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
 		:exe "normal \<C-w>\<C-h>"
 		try
-            ":NetrwC
-            if winnr('$') > 1
-                wincmd p
-            endif
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
@@ -465,12 +482,8 @@ function! NewFileRight()
 	if tabpagewinnr(tabpagenr(), '$') == 1
 		:vsplit .
 	elseif tabpagewinnr(tabpagenr(), '$') == 2
-		:exe "normal \<C-w>\<C-l>" 
+		:exe "normal \<C-w>\<C-l>"
 		try
-            ":NetrwC
-            if winnr('$') > 1
-                wincmd p
-            endif
 			:E
 		catch /E37:/ " No write since last change
 			echo "do you want to save the buffer? y/n "
@@ -512,6 +525,24 @@ function! ToggleSplits()
 	endif
 endfunction
 
+function! GotoFileRight()
+    let l:file = expand('<cfile>')
+    if l:file == ''
+        return
+    endif
+    if tabpagewinnr(tabpagenr(), '$') == 1
+        :vsplit
+    else
+        :exe "normal \<C-w>\<C-l>"
+    endif
+    try
+        execute 'find ' . l:file
+    catch /E345:/ " can't find file in path
+        execute 'edit ' . l:file
+    endtry
+endfunction
+nnoremap gf :call GotoFileRight()<CR>
+
 function! Confirm()
 	let l:answer = nr2char(getchar())
 	if l:answer == 'y' || l:answer == 'n'
@@ -538,7 +569,9 @@ function! NetrwMapping()
     redraw
 endfunction
 
-nnoremap - :w<CR> :E<CR>
+" :silent! update — write only if real file + modified; suppress errors on
+" scratch / unnamed buffers so a misnamed buffer can't be saved to disk by reflex
+nnoremap - :silent! update<CR>:E<CR>
 
 " ======================================
 " plugin settings
@@ -576,31 +609,52 @@ nnoremap - :w<CR> :E<CR>
 if isdirectory('w:')
 
 function! Build()
-	if tabpagewinnr(tabpagenr(), '$') == 1
-        if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h' 
-            :call system('del w:\build\build.log')
-            :vsplit w:\build\build.log|put=system('w:\dotfiles\shell.bat & build.bat') | redraw
-            :w
-        elseif &filetype ==# 'tex' 
-            :call system('del w:\kompendium\build.log')
-            :vsplit w:\kompendium\build.log|put=system('w:\kompendium\build.bat') | redraw
-            :w
+    if tabpagewinnr(tabpagenr(), '$') == 1
+        let l:cmd = ''
+        " shader files now have filetype=cpp, so the 'cpp' branch covers them
+        if &filetype ==# 'c' || &filetype ==# 'cpp' || &filetype ==# 'h'
+            let l:cmd = 'cmd.exe /c "w:\dotfiles\shell.bat & build.bat"'
+        elseif &filetype ==# 'tex'
+            let l:cmd = 'cmd.exe /c w:\kompendium\build.bat'
         endif
-	elseif tabpagewinnr(tabpagenr(), '$') == 2
-		if winnr() == winnr('$')
-			:call ToggleSplits()
-			:call Build()
-			:call SwapSplits()
-		else
-			:call ToggleSplits()
-			:call Build()
+        if l:cmd == ''
+            return
+        endif
+        " save current buffer so build sees latest edits (silent on scratch/no-name)
+        silent! update
+        " kill any prior build so we don't have two jobs writing to dead buffers
+        if exists('s:build_job') && job_status(s:build_job) ==# 'run'
+            call job_stop(s:build_job)
+        endif
+        " wipe leftover [build.log] buffer so the :file rename doesn't hit E95
+        let l:old = bufnr('\[build.log\]')
+        if l:old > 0
+            execute 'silent! bwipeout!' l:old
+        endif
+        vnew
+        setlocal buftype=nofile bufhidden=hide noswapfile nobuflisted
+        silent! file [build.log]
+        call ReadLogFileC()
+        " async: window appears immediately, output streams in as the compiler emits it
+        let s:build_job = job_start(l:cmd, {
+                    \ 'out_io': 'buffer', 'out_buf': bufnr('%'), 'out_msg': 0,
+                    \ 'err_io': 'buffer', 'err_buf': bufnr('%'), 'err_msg': 0,
+                    \ })
+    elseif tabpagewinnr(tabpagenr(), '$') == 2
+        if winnr() == winnr('$')
+            :call ToggleSplits()
+            :call Build()
+            :call SwapSplits()
+        else
+            :call ToggleSplits()
+            :call Build()
         endif
     endif
 endfunction
 
-endif
-
 nnoremap <C-t> :call Build()<CR>
+
+endif
 
 autocmd BufRead,BufNewFile *.log :call ReadLogFileC()
 function! ReadLogFileC()
@@ -617,36 +671,78 @@ function! GotoErrorC()
 		"linjenr til feil i l-register
 		:redir @l> |.g/^.:\(\\.*\\\).*\..*(\zs\d.*\ze):/echon matchstr(getline('.'),@/)|redir END
 		:call clearmatches()
+		let l:fname = trim(@f)
+		let l:lineno = trim(@l)
+		if l:fname == '' || l:lineno !~ '^\d\+$' || !filereadable(l:fname)
+			echohl WarningMsg | echo 'no jump target on this line' | echohl None
+			return
+		endif
 		:winc p
-		:w
-		:execute 'edit' @f
-		:execute @l
+		:silent! update
+		:execute 'edit' l:fname
+		:execute l:lineno
 	catch /E492:/
 	endtry
 endfunction
 
+" AI 
 autocmd BufRead,BufNewFile *.search :call ReadLogFileSearch()
 function! ReadLogFileSearch()
 	nnoremap <buffer> <CR> :call GotoErrorSearch()<CR>
 	highlight ErrorFiles gui=bold
-	:match ErrorFiles /^.*\..*:\d*\ze: /
+	" Highlight only the filename portion up to :<digits>:
+	:match ErrorFiles /^.\{-}:\d\+\ze:/
 endfunction
 
 function! GotoErrorSearch()
 	try
-		" filnavn til feil i f-register
-		:redir @f> |.g/^.*\..*\ze:\d*:/echon matchstr(getline('.'),@/)|redir END | redraw
+		" filnavn til feil i f-register (filename)
+		:redir @f> |.g/^.\{-}\ze:\d\+:/echon matchstr(getline('.'),@/)|redir END | redraw
 
-		"linjenr til feil i l-register
-		:redir @l> |.g/^.*\..*:\zs\d*\ze:/echon matchstr(getline('.'),@/)|redir END
+		" linjenr til feil i l-register (line number)
+		:redir @l> |.g/^.\{-}:\zs\d\+\ze:/echon matchstr(getline('.'),@/)|redir END
+
 		:call clearmatches()
+		let l:fname = trim(@f)
+		let l:lineno = trim(@l)
+		" bail if we couldn't parse a file:line: pair — protects against
+		" the buffer-named-after-junk-in-@f / accidental :w stray-file bug
+		if l:fname == '' || l:lineno !~ '^\d\+$' || !filereadable(l:fname)
+			echohl WarningMsg | echo 'no jump target on this line' | echohl None
+			return
+		endif
 		:winc p
-		:w
-		:execute 'edit' @f
-		:execute @l
+		:silent! update
+		:execute 'edit' l:fname
+		:execute l:lineno
 	catch /E492:/
 	endtry
 endfunction
+
+
+
+" autocmd BufRead,BufNewFile *.search :call ReadLogFileSearch()
+" function! ReadLogFileSearch()
+" 	nnoremap <buffer> <CR> :call GotoErrorSearch()<CR>
+" 	highlight ErrorFiles gui=bold
+" 	:match ErrorFiles /^.*\..*:\d*\ze: /
+" endfunction
+" 
+" function! GotoErrorSearch()
+" 	try
+" 		" filnavn til feil i f-register
+" 		:redir @f> |.g/^.*\..*\ze:\d*:/echon matchstr(getline('.'),@/)|redir END | redraw
+" 
+" 		"linjenr til feil i l-register
+" 		:redir @l> |.g/^.*\..*:\zs\d*\ze:/echon matchstr(getline('.'),@/)|redir END
+" 		:call clearmatches()
+" 		:winc p
+" 		:w
+" 		:execute 'edit' @f
+" 		:execute @l
+" 	catch /E492:/
+" 	endtry
+" endfunction
 
 " ======================================
 " misc fixes & typos
@@ -662,8 +758,14 @@ imap Îy <BS>
 :command! WQa wqa
 :command! Wqa wqa
 
-augroup glsl
+" :Rename <newname> — save buffer under new name, delete old file, drop old buffer
+command! -nargs=1 -complete=file Rename
+            \ saveas <args> | call delete(expand('#:p')) | bwipeout #
+
+" :Scratch — throwaway buffer in a vertical split
+command! Scratch vnew | setlocal buftype=nofile bufhidden=hide noswapfile
+
+augroup ShaderFiletype
     autocmd!
-    autocmd BufNewFile,BufRead *.glsl,*.vert,*.frag,*.geom setfiletype glsl
+    autocmd BufNewFile,BufRead *.glsl,*.vert,*.frag,*.geom,*.comp,*.tesc,*.tese set filetype=cpp
 augroup END
-autocmd FileType glsl setlocal syntax=cpp

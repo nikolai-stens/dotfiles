@@ -17,6 +17,7 @@ REM å kjøre vcvarsall/vcvars64 tar sykt lang tid, bedre å bare lagre env som 
 if exist w:\dotfiles set PATH=%PATH%;w:\dotfiles
 if exist w:\opengl\include set INCLUDE=%INCLUDE%;w:\opengl\include
 if exist w:\opengl\lib set LIB=%LIB%;w:\opengl\lib
+if exist C:\Users\nikol\.local\bin set PATH=%PATH%;C:\Users\nikol\.local\bin
 
 REM REM glew stuff
 REM set INCLUDE=C:\vcpkg\installed\x64-windows\include;%INCLUDE%
